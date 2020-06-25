@@ -15,6 +15,7 @@ const io = socketio(server);
 
 io.on('connection', (socket) => {
     console.log("Someone has connected!");
+    // console.log(socket);
     socket.emit('message', 'You are connected!');
 
     socket.on('message', (text) => {
@@ -25,11 +26,11 @@ io.on('connection', (socket) => {
         const clientId = payload.clientId;
         const gameId = guid();
 
-        console.log(payload);
+        io.to(payload.socket).emit('gameCreated', gameId);
+
     });
 
     socket.on('join', (payload) => {
-        console.log(payload);
     });
 });
 
@@ -41,9 +42,9 @@ server.listen(8080, () => {
     console.log('RPS started on 8080');
 });
 
+// Generating gamde ID, definitely not copy/pasted from Stack Overflow
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
 }
  
-// then to call it, plus stitch in '4' in the third group
 const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();

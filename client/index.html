@@ -5,6 +5,8 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
+        <h1>Welcome to Exploding Kittens Online!</h1>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <div class="intro-wrapper">
             <button id="create">Create Game</button>
             <button id="join">Join Game</button>
@@ -12,6 +14,9 @@
             <input type="text" id="gameId">
             <label for="playerName">Your Name:</label>
             <input type="text" id="playerName">
+        </div>
+        <div class="instructions">
+            <a href="help.html">How to Play</a>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="src/client.js"></script>

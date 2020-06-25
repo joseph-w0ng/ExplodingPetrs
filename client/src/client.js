@@ -8,10 +8,14 @@ const onFormSubmitted = (e) => {
 }
 
 const socket = io();
-// socket.on('message', writeEvent);
+
+socket.on('gameCreated', (id) => {
+    gameId = id;
+    console.log(gameId);
+});
 
 // HTML elements
-let clientId = null;
+let clientId = socket.id;
 let gameId = null;
 
 const createButton = document.getElementById("create");
@@ -40,5 +44,6 @@ joinButton.addEventListener("click", e => {
     gameIdText.value = '';
     socket.emit('join', payLoad);
 })
+
 
 // document.querySelector('#chat-form').addEventListener('submit', onFormSubmitted);
