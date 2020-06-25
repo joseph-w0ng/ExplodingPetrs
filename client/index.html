@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Exploding Kittens Online</title>
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+    <body>
+        <div class="intro-wrapper">
+            <button id="create">Create Game</button>
+            <button id="join">Join Game</button>
+            <label for="gameId">Game ID:</label>
+            <input type="text" id="gameId">
+            <label for="playerName">Your Name:</label>
+            <input type="text" id="playerName">
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="src/client.js"></script>
+    </body>
+</html>
