@@ -1,0 +1,16 @@
+.createForm {
+    display: none;
+}
+
+.joinForm {
+    display: none;
+}
+
+.lobby {
+    display: none;
+}
+
+.joinError {
+    color: red;
+    font-size: 10px;
+}

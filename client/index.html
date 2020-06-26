@@ -5,18 +5,33 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <h1>Welcome to Exploding Kittens Online!</h1>
+        <h1>Exploding Kittens</h1>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <div class="intro-wrapper">
-            <button id="create">Create Game</button>
-            <button id="join">Join Game</button>
-            <label for="gameId">Game ID:</label>
-            <input type="text" id="gameId">
-            <label for="playerName">Your Name:</label>
-            <input type="text" id="playerName">
+            <button id="createOption">Create Game</button>
+            <button id="joinOption">Join Game</button>
+            <br>
+            <input type="text" class="joinForm" id="gameId" placeholder="Game ID">
+            <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
+            <button class="createForm" id="create">Submit</button>
+            <button class="joinForm" id="join">Submit</button>
+            <div class="joinError"></div>
+        </div>
+        <div class="lobby">
+            <div id="displayId">    
+            </div>
+            <div id="otherPlayers">
+            </div>
+            <div id="startGame">
+            </div>
         </div>
         <div class="instructions">
             <a href="help.html">How to Play</a>
+        </div>
+        <div class="game">
+
+        </div>
+        <div class="chat">
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="src/client.js"></script>
