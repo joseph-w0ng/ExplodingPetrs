@@ -14,3 +14,11 @@
     color: red;
     font-size: 10px;
 }
+
+#start {
+    display: none;
+}
+
+#startButton {
+    display: none;
+}

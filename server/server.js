@@ -13,13 +13,47 @@ const server = http.createServer(app);
 
 const io = socketio(server);
 
+// Keep track of which game each client is in.
+const allClients = {};
 const games = {};
+
+// Helper functions
+const trim = (str) => {
+    return String(this).replace(/^\s+|\s+$/g, '');
+};
+
 
 io.on('connection', (socket) => {
     socket.on('message', (text) => {
         io.emit('message', text);
     });
+    // On game disconnect:
+    socket.on('disconnect', () => {
+        if (!(socket.id in allClients)) {
+            return;
+        }
 
+        var room = allClients[socket.id];
+
+        if (games[room].clients.length === 1) {
+            delete games[room];
+            return;
+        }
+
+        for (var i = 0; i < games[room].clients.length; i++) {
+            if (games[room].clients[i].clientId === socket.id) {
+                if (games[room].clients[i].isAdmin) {
+                    games[room].clients[i+1].isAdmin = true;
+                }
+                games[room].clients.splice(i, 1);
+            }
+        }
+
+        socket.leave(room);
+        io.in(room).emit('playerChanged', games[room].clients);
+        delete allClients[socket.id];   
+    });
+    // On game create, automatically add the user to the game.
     socket.on('create', (payload) => {
         const clientId = payload.clientId;
         const name = payload.name;
@@ -31,17 +65,22 @@ io.on('connection', (socket) => {
             "admin": clientId,
             "adminName": name
         };
-        
-        io.to(payload.clientId).emit('gameCreated', gameId);
 
         const game = games[gameId];
         game.clients.push({
             "clientId": clientId,
             "name": name,
+            "isAdmin": true
         })
 
+        allClients[clientId] = gameId;
+
+        socket.join(gameId);
+        io.to(payload.clientId).emit('gameCreated', gameId);
+        io.to(payload.clientId).emit('gameJoined', game.clients);
     });
 
+    // On game join
     socket.on('join', (payload) => {
         const clientId = payload.clientId;
         const name = payload.name;
@@ -55,15 +94,28 @@ io.on('connection', (socket) => {
 
         // Max players = 8
         if (game.clients.length >= 8) {
+            io.to(payload.clientId).emit('gameFull');
             return;
         }
 
-        io.to(payload.clientId).emit("gameJoined");
-
+        for (var i = 0; i < game.clients.length; i++) {
+            if (trim(game.clients[i].name) === trim(name)) {
+                io.to(clientId).emit('invalidName');
+                return;
+            }
+        }
         game.clients.push({
             "clientId": clientId,
             "name": name,
+            "isAdmin": false
         });
+
+        allClients[clientId] = gameId;
+        
+        io.in(gameId).emit("playerChanged", game.clients);
+        socket.join(gameId);
+        io.to(clientId).emit("gameJoined", game.clients);
+        
     });
 });
 
@@ -72,7 +124,7 @@ server.on('error', (err) => {
 });
 
 server.listen(8080, () => {
-    console.log('RPS started on 8080');
+    console.log('Exploding Kittens started on 8080');
 });
 
 // Generating game ID, definitely not copy/pasted from Stack Overflow

@@ -15,18 +15,28 @@
             <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
             <button class="createForm" id="create">Submit</button>
             <button class="joinForm" id="join">Submit</button>
-            <div class="joinError"></div>
+            <div class="joinError">
+                <p id="errorMsg"></p>
+            </div>
         </div>
         <div class="lobby">
             <div id="displayId">    
             </div>
             <div id="otherPlayers">
+                <h4>Players:</h4>
+                <ul id="playerList">
+                </ul>
             </div>
             <div id="startGame">
+                <p id="hostText"></p>
+                <button id="start">Start Game!</button>
+            </div>
+            <div id="leaveGame">
+                <button id="leave">Leave Game</button>
             </div>
         </div>
         <div class="instructions">
-            <a href="help.html">How to Play</a>
+            <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=300'); return false;">How to Play</a>
         </div>
         <div class="game">
 
