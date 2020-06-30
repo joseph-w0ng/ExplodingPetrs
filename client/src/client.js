@@ -27,7 +27,7 @@ const showStartOption = (clients) => {
         parent.style.display = "block";
         if (clients[i].clientId === socket.id) {
             if (clients[i].isAdmin) {
-                if (clients.length >= 4) {
+                if (clients.length >= 2) {
                     startButton.style.display = "block";
                     text.innerHTML = "You are the host! Press start when ready to begin!";
                 }
@@ -54,8 +54,7 @@ const hideChat = () => {
 };
 
 const showGameId = (id) => {
-    var displayGameId = document.createTextNode("Your game id is: " + id);
-    document.getElementById("displayId").appendChild(displayGameId);
+    document.getElementById("displayId").innerHTML = "Your game id is: " + id;
 };
 
 const updatePlayers = (players, list) => {
@@ -136,11 +135,17 @@ leaveButton.addEventListener("click", (e) => {
     }
 
     gameId = null;
-    socket.emit('disconnect');
+
+    socket.disconnect();
 
     document.querySelector(".intro-wrapper").style.display = "block";
     document.querySelector(".lobby").style.display = "none";
+    socket.connect();
 
+});
+
+startButton.addEventListener("click", (e) => {
+    socket.emit('ready', gameId);
 });
 // Server events
 socket.on('gameCreated', (id) => {
@@ -150,14 +155,14 @@ socket.on('gameCreated', (id) => {
 socket.on('gameJoined', (clients) => {
     document.querySelector(".intro-wrapper").style.display = "none";
     document.querySelector(".lobby").style.display = "block";
+    document.getElementById("errorMsg").innerHTML = "";
     showGameId(gameId);
     updatePlayers(clients, playerList);
     showStartOption(clients);
 });
 
 socket.on('gameJoinError', () => {
-    var errorMsg = document.createTextNode("Error: Game ID " + gameId + " was not found.");
-    document.querySelector(".joinError").appendChild(errorMsg);
+   document.getElementById("errorMsg").innerHTML = "Error: Game ID " + gameId + " was not found.";
 });
 
 socket.on('gameFull', () => {
@@ -172,6 +177,12 @@ socket.on('invalidName', () => {
 socket.on('playerChanged', (clients) => {
     updatePlayers(clients, playerList);
     showStartOption(clients);
+});
+
+socket.on('gameStarted', () => {
+    document.querySelector(".lobby").style.display = "none";
+    startButton.style.display = "none";
+    document.querySelector(".game").style.display = "block";
 });
 
 

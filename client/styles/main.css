@@ -22,3 +22,13 @@
 #startButton {
     display: none;
 }
+
+.game {
+    display: none;
+}
+
+#screen {
+    width: 800px;
+    height: 800px;
+    border: 1px solid black;
+}

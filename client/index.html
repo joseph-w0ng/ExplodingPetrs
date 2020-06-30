@@ -35,13 +35,15 @@
                 <button id="leave">Leave Game</button>
             </div>
         </div>
-        <div class="instructions">
-            <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=300'); return false;">How to Play</a>
-        </div>
         <div class="game">
+            <canvas id="screen">
 
+            </canvas>
         </div>
         <div class="chat">
+        </div>
+        <div class="instructions">
+            <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=300'); return false;">How to Play</a>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="src/client.js"></script>

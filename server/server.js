@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-const logic = require(`${__dirname}/../logic/game.js`);
+// const logic = require(`${__dirname}/../client/logic/game.js`);
 
 const app = express();
 
@@ -20,14 +20,22 @@ const games = {};
 
 // Helper functions
 const trim = (str) => {
-    return String(this).replace(/^\s+|\s+$/g, '');
+    return String(str).replace(/^\s+|\s+$/g, '');
 };
+
+// Generating game ID, definitely not copy/pasted from Stack Overflow
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+}
+ 
+const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 
 
 io.on('connection', (socket) => {
     socket.on('message', (text) => {
         io.emit('message', text);
     });
+
     // On game disconnect:
     socket.on('disconnect', () => {
         if (!(socket.id in allClients)) {
@@ -40,6 +48,7 @@ io.on('connection', (socket) => {
             delete games[room];
             return;
         }
+        console.log(games[room].clients);
 
         for (var i = 0; i < games[room].clients.length; i++) {
             if (games[room].clients[i].clientId === socket.id) {
@@ -49,8 +58,9 @@ io.on('connection', (socket) => {
                 games[room].clients.splice(i, 1);
             }
         }
-
+        console.log(games[room].clients);
         socket.leave(room);
+        
         io.in(room).emit('playerChanged', games[room].clients);
         delete allClients[socket.id];   
     });
@@ -64,9 +74,10 @@ io.on('connection', (socket) => {
             "id": gameId,
             "clients": [],
             "admin": clientId,
-            "adminName": name
+            "adminName": name,
+            "game": null
         };
-
+        // On start game, create new game
         const game = games[gameId];
         game.clients.push({
             "clientId": clientId,
@@ -101,6 +112,8 @@ io.on('connection', (socket) => {
 
         for (var i = 0; i < game.clients.length; i++) {
             if (trim(game.clients[i].name) === trim(name)) {
+                console.log(trim(game.clients[i].name));
+
                 io.to(clientId).emit('invalidName');
                 return;
             }
@@ -112,12 +125,18 @@ io.on('connection', (socket) => {
         });
 
         allClients[clientId] = gameId;
-        
+        console.log(allClients);
         io.in(gameId).emit("playerChanged", game.clients);
         socket.join(gameId);
         io.to(clientId).emit("gameJoined", game.clients);
         
     });
+
+    // Game ready to start
+    socket.on('ready', (gameId) => {
+        io.to(gameId).emit('gameStarted');
+    });
+
 });
 
 server.on('error', (err) => {
@@ -127,10 +146,3 @@ server.on('error', (err) => {
 server.listen(8080, () => {
     console.log('Exploding Kittens started on 8080');
 });
-
-// Generating game ID, definitely not copy/pasted from Stack Overflow
-function S4() {
-    return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
-}
- 
-const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
