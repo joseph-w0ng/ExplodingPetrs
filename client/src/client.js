@@ -7,6 +7,7 @@ socket.on('connect', () => {
 })
 
 let gameId = null;
+let name = null;
 
 const playerList = document.getElementById("playerList");
 const createOption = document.getElementById("createOption");
@@ -17,6 +18,8 @@ const gameIdText = document.getElementById("gameId");
 const playerName = document.getElementById("playerName");
 const leaveButton = document.getElementById("leave");
 const startButton = document.getElementById("start");
+const sendButton = document.getElementById("send");
+const messageToSend = document.getElementById("chatMsg");
 
 // Helper functions
 const showStartOption = (clients) => {
@@ -45,13 +48,6 @@ const showStartOption = (clients) => {
     }
 
 }
-const showChat = () => {
-
-};
-
-const hideChat = () => {
-
-};
 
 const showGameId = (id) => {
     document.getElementById("displayId").innerHTML = "Your game id is: " + id;
@@ -101,28 +97,33 @@ joinOption.addEventListener("click", e => {
 });
 
 createButton.addEventListener("click", e => {
+    name = $.trim(playerName.value)
     const payLoad = {
         "clientId": clientId,
-        "name": $.trim(playerName.value)
+        "name": name
     }; 
     playerName.value = '';
     socket.emit('create', payLoad);
 
     document.querySelector(".intro-wrapper").style.display = "none";
-    document.querySelector(".lobby").style.display = "block";
+    document.querySelector(".lobby").style.display = "block"
+    document.querySelector(".chat").style.display = "block";
 });
 
 joinButton.addEventListener("click", e => {
     gameId = gameIdText.value;
+    name = $.trim(playerName.value)
+
     const payLoad = {
         "clientId": clientId,
         "gameId": $.trim(gameId),
-        "name": $.trim(playerName.value)
+        "name": name
     };
 
     playerName.value = '';
     gameIdText.value = '';
     socket.emit('join', payLoad);
+    document.querySelector(".chat").style.display = "block";
 });
 
 leaveButton.addEventListener("click", (e) => {
@@ -146,6 +147,23 @@ leaveButton.addEventListener("click", (e) => {
 
 startButton.addEventListener("click", (e) => {
     socket.emit('ready', gameId);
+});
+
+sendButton.addEventListener("click", (e) => {
+    let payload = {
+        "gameId": gameId,
+        "name": name,
+        "message": messageToSend.value
+    };
+    messageToSend.value = '';
+    socket.emit('message', payload);
+});
+
+messageToSend.addEventListener("keyup", (e) => {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        sendButton.click();
+    }
 });
 // Server events
 socket.on('gameCreated', (id) => {
@@ -174,6 +192,10 @@ socket.on('invalidName', () => {
     document.getElementById("errorMsg").innerHTML = "Error: Please enter a name that has not already been used.";
 });
 
+socket.on('alreadyStarted', () => {
+    document.getElementById("errorMsg").innerHTML = "Error: Game has already started."
+})
+
 socket.on('playerChanged', (clients) => {
     updatePlayers(clients, playerList);
     showStartOption(clients);
@@ -183,6 +205,13 @@ socket.on('gameStarted', () => {
     document.querySelector(".lobby").style.display = "none";
     startButton.style.display = "none";
     document.querySelector(".game").style.display = "block";
+});
+
+socket.on('newChat', (msg) => {
+    var node = document.createElement("li");
+    node.appendChild(document.createTextNode(msg));
+    let parent = document.getElementById("chatBox");
+    parent.appendChild(node);
 });
 
 

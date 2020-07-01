@@ -1,13 +1,54 @@
+.intro-wrapper {
+    display: block;
+    height: 80vh;
+    width: 100%;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+#createOption {
+    height: 50px;
+    width: 100px;
+}
+
+#joinOption {
+    height: 50px;
+    width: 100px;
+}
+
 .createForm {
     display: none;
+    height: 50px;
+    width: 200px;
+    font-size: 20px;
 }
 
 .joinForm {
     display: none;
+    height: 50px;
+    width: 200px;
+    font-size: 20px;
+}
+
+.title {
+    width: 100%;
+    margin: 0px;
+    float: left;
+}
+
+.instructions {
+    float: none;
+    width: 100px;
+    margin: 0px;
 }
 
 .lobby {
     display: none;
+    width: 50%;
+    height: 400px;
+    margin: 0px;
+    float: left;
 }
 
 .joinError {
@@ -25,10 +66,53 @@
 
 .game {
     display: none;
+    width: 60%;
+    height: 70%;
+    border: 1px solid red;
 }
 
-#screen {
-    width: 800px;
-    height: 800px;
+#deck {
+    width: 50%;
+    height: 50%;
     border: 1px solid black;
+}
+
+#hand {
+    width: 50%;
+    height: 50%;
+    border: 1px solid black;
+}
+
+.chat {
+    display: none;
+    font-family: Verdana;
+    font-size: 12px;
+    color: #333333;
+    border: 1px double #FFFFFF;
+    padding: 5px;
+    margin: 10px;
+    width:40%;
+    height:50%;
+    position:relative;
+    border: 1px solid #E9E9E9;
+    overflow: scroll;
+    float: right;
+}
+
+#chatBox {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    position:relative;
+    overflow:scroll;
+    bottom:0;
+    height: 400px;
+}
+
+#displayId {
+    width: 50%;
+}
+
+#otherPlayers {
+    width: 50%;
 }

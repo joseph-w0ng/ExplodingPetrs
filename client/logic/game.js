@@ -1,4 +1,4 @@
-class Game {
+module.exports = class Game {
     // players = clients
     constructor(players) {
         this.turnCounter = 0;
@@ -90,7 +90,6 @@ class Game {
                 name: "cat5",
                 type: "cat"
             });
-
         }
 
         // Add an extra defuse to the deck
@@ -103,7 +102,7 @@ class Game {
     // Stolen off Stack Overflow so I don't have to write my own shuffle function
     shuffle() {
         var j, x, i;
-        for (i = a.length - 1; i > 0; i--) {
+        for (i = this.deck.length - 1; i > 0; i--) {
             j = Math.floor(Math.random() * (i + 1));
             x = a[i];
             a[i] = a[j];
@@ -165,5 +164,4 @@ class Game {
     endTurn() {
         // Defuse logic
     }
-}
-
+};

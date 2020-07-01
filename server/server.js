@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-// const logic = require(`${__dirname}/../client/logic/game.js`);
+const Game = require('./../client/logic/game.js');
 
 const app = express();
 
@@ -48,7 +48,6 @@ io.on('connection', (socket) => {
             delete games[room];
             return;
         }
-        console.log(games[room].clients);
 
         for (var i = 0; i < games[room].clients.length; i++) {
             if (games[room].clients[i].clientId === socket.id) {
@@ -58,7 +57,6 @@ io.on('connection', (socket) => {
                 games[room].clients.splice(i, 1);
             }
         }
-        console.log(games[room].clients);
         socket.leave(room);
         
         io.in(room).emit('playerChanged', games[room].clients);
@@ -75,7 +73,8 @@ io.on('connection', (socket) => {
             "clients": [],
             "admin": clientId,
             "adminName": name,
-            "game": null
+            "game": null,
+            "started": false
         };
         // On start game, create new game
         const game = games[gameId];
@@ -99,10 +98,14 @@ io.on('connection', (socket) => {
         const gameId = payload.gameId;
 
         if (!(gameId in games)) {
-            io.to(payload.clientId).emit('gameJoinError', gameId + " does not exist");
+            io.to(payload.clientId).emit('gameJoinError');
             return;
         }
         const game = games[gameId];
+        if (game.started) {
+            io.to(payload.clientId).emit('alreadyStarted');
+            return;
+        }
 
         // Max players = 8
         if (game.clients.length >= 8) {
@@ -112,8 +115,6 @@ io.on('connection', (socket) => {
 
         for (var i = 0; i < game.clients.length; i++) {
             if (trim(game.clients[i].name) === trim(name)) {
-                console.log(trim(game.clients[i].name));
-
                 io.to(clientId).emit('invalidName');
                 return;
             }
@@ -125,13 +126,17 @@ io.on('connection', (socket) => {
         });
 
         allClients[clientId] = gameId;
-        console.log(allClients);
+
         io.in(gameId).emit("playerChanged", game.clients);
         socket.join(gameId);
         io.to(clientId).emit("gameJoined", game.clients);
         
     });
-
+    // Chat message
+    socket.on('message', (payload) => {
+        const chatMsg = payload.name + ": " + payload.message;
+        io.to(payload.gameId).emit('newChat', chatMsg);
+    });
     // Game ready to start
     socket.on('ready', (gameId) => {
         io.to(gameId).emit('gameStarted');
