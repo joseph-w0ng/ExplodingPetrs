@@ -23,12 +23,21 @@ const trim = (str) => {
     return String(str).replace(/^\s+|\s+$/g, '');
 };
 
+ const guid = () => {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < 6; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ };
 // Generating game ID, definitely not copy/pasted from Stack Overflow
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
 }
  
-const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+// const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 
 
 io.on('connection', (socket) => {
@@ -67,6 +76,9 @@ io.on('connection', (socket) => {
         const clientId = payload.clientId;
         const name = payload.name;
         const gameId = guid();
+        while (gameId in games) {
+            gameId = guid();
+        }
 
         games[gameId] = {
             "id": gameId,
@@ -102,6 +114,7 @@ io.on('connection', (socket) => {
             return;
         }
         const game = games[gameId];
+        
         if (game.started) {
             io.to(payload.clientId).emit('alreadyStarted');
             return;
@@ -114,7 +127,7 @@ io.on('connection', (socket) => {
         }
 
         for (var i = 0; i < game.clients.length; i++) {
-            if (trim(game.clients[i].name) === trim(name)) {
+            if (trim(game.clients[i].name) === trim(name) || name === '') {
                 io.to(clientId).emit('invalidName');
                 return;
             }
@@ -139,9 +152,16 @@ io.on('connection', (socket) => {
     });
     // Game ready to start
     socket.on('ready', (gameId) => {
-        io.to(gameId).emit('gameStarted');
+        const game = games[gameId];
+        game.game = new Game(game.clients);
+        game.started = true;
+        io.to(gameId).emit('gameStarted', game.game);
     });
 
+    // Move made
+    socket.on('move', (gameId) => {
+
+    });
 });
 
 server.on('error', (err) => {

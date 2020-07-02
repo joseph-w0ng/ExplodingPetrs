@@ -20,6 +20,7 @@ const leaveButton = document.getElementById("leave");
 const startButton = document.getElementById("start");
 const sendButton = document.getElementById("send");
 const messageToSend = document.getElementById("chatMsg");
+const endTurnButton = document.getElementById("endTurn");
 
 // Helper functions
 const showStartOption = (clients) => {
@@ -57,12 +58,31 @@ const updatePlayers = (players, list) => {
     $("#playerList").empty();
     for (let player of players) {
         if (player.isAdmin) {
-            $("<li>" + player.name + " (Host)</li>").appendTo("#playerList");
+            if (player.clientId === clientId) {
+                $("<li>" + player.name + " (Host, You)</li>").appendTo("#playerList");
+            }
+            else {
+                $("<li>" + player.name + " (Host)</li>").appendTo("#playerList");
+            }
+        }
+        else if (player.clientId === clientId) {
+            $("<li>" + player.name + " (You) </li>").appendTo("#playerList");
         }
         else {
             $("<li>" + player.name + "</li>").appendTo("#playerList");
         }
         
+    }
+};
+
+// TODO: change so that client only sees what is necessary, no need to send entire game
+const updateGameState = (game) => { // game object
+    console.log(game);
+    if (game.playerList[game.turnCounter].clientId === clientId) {
+        endTurnButton.style.display = "block";
+    }
+    else {
+        endTurnButton.style.display = "none";
     }
 };
 
@@ -141,6 +161,7 @@ leaveButton.addEventListener("click", (e) => {
 
     document.querySelector(".intro-wrapper").style.display = "block";
     document.querySelector(".lobby").style.display = "none";
+    document.querySelector(".chat").style.display = "none";
     socket.connect();
 
 });
@@ -156,6 +177,10 @@ sendButton.addEventListener("click", (e) => {
         "message": messageToSend.value
     };
     messageToSend.value = '';
+    // Automatically scroll down
+    $('#chatBox').stop().animate ({
+        scrollTop: $('#chatBox')[0].scrollHeight
+    });
     socket.emit('message', payload);
 });
 
@@ -165,6 +190,17 @@ messageToSend.addEventListener("keyup", (e) => {
         sendButton.click();
     }
 });
+
+playerName.addEventListener("keyup", (e) => {
+    if (e.keyCode === 13) {
+        if (document.querySelector(".joinForm").style.display === "none") {
+            createButton.click();
+        }
+        else {
+            joinButton.click();
+        }
+    }
+})
 // Server events
 socket.on('gameCreated', (id) => {
     gameId = id;
@@ -201,10 +237,11 @@ socket.on('playerChanged', (clients) => {
     showStartOption(clients);
 });
 
-socket.on('gameStarted', () => {
+socket.on('gameStarted', (game) => { // game is a Game() object
     document.querySelector(".lobby").style.display = "none";
     startButton.style.display = "none";
     document.querySelector(".game").style.display = "block";
+    updateGameState(game);
 });
 
 socket.on('newChat', (msg) => {
@@ -214,4 +251,15 @@ socket.on('newChat', (msg) => {
     parent.appendChild(node);
 });
 
+socket.on('makeMove', () => {
+
+});
+
+socket.on('invalidMove', () => {
+
+});
+
+socket.on('gameOver', () => {
+
+});
 

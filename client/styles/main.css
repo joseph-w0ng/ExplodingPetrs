@@ -12,6 +12,12 @@
     width: 100px;
 }
 
+.gameElements {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    height: 90%;
+}
+
 #joinOption {
     height: 50px;
     width: 100px;
@@ -66,8 +72,8 @@
 
 .game {
     display: none;
-    width: 60%;
-    height: 70%;
+    width: 100%;
+    height: 100%;
     border: 1px solid red;
 }
 
@@ -91,9 +97,9 @@
     border: 1px double #FFFFFF;
     padding: 5px;
     margin: 10px;
-    width:40%;
-    height:50%;
-    position:relative;
+    width:auto;
+    height:auto;
+    position: relative;
     border: 1px solid #E9E9E9;
     overflow: scroll;
     float: right;
@@ -115,4 +121,8 @@
 
 #otherPlayers {
     width: 50%;
+}
+
+#endTurn {
+    display: none;
 }

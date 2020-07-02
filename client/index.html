@@ -9,10 +9,11 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <header class="title">
             <h1>Exploding Kittens</h1>
-        </header>
+        </div>
         <div class="intro-wrapper">
             <button id="createOption">Create Game</button>
             <button id="joinOption">Join Game</button>
+            <br>
             <input type="text" class="joinForm" id="gameId" placeholder="Game ID">
             <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
             <button class="createForm" id="create">Submit</button>
@@ -21,41 +22,41 @@
                 <p id="errorMsg"></p>
             </div>
         </div>
-        <div class="lobby">
-            <div id="displayId">    
+        <div class="gameElements">
+            <div class="lobby">
+                <div id="displayId">    
+                </div>
+                <div id="otherPlayers">
+                    <h4>Players:</h4>
+                    <ul id="playerList">
+                    </ul>
+                </div>
+                <div id="startGame">
+                    <p id="hostText"></p>
+                    <button id="start">Start Game!</button>
+                </div>
+                <div id="leaveGame">
+                    <button id="leave">Leave Game</button>
+                </div>
             </div>
-            <div id="otherPlayers">
-                <h4>Players:</h4>
-                <ul id="playerList">
+            <div class="game">
+                <div class="deck">
+                    <br>
+                </div>
+                <ul id="turn">
                 </ul>
+                <div class="hand">
+                </div>
+                <button id='endTurn'></button>
             </div>
-            <div id="startGame">
-                <p id="hostText"></p>
-                <button id="start">Start Game!</button>
-            </div>
-            <div id="leaveGame">
-                <button id="leave">Leave Game</button>
+            <div class="chat">
+                <h4>Chat</h4>
+                <ul id="chatBox">
+                </ul>
+                <input type="text" id="chatMsg" placeholder="Send Message">
+                <button id="send">Send</button>
             </div>
         </div>
-        <section class="game">
-            <section class="deck">
-                <br>
-            </section>
-            <ul id="turn">
-            </ul>
-            <br>
-            <section class="hand">
-                <br>
-            </section>
-        </section>
-        <div class="chat">
-            <h4>Chat</h4>
-            <ul id="chatBox">
-            </ul>
-            <input type="text" id="chatMsg" placeholder="Send Message">
-            <button id="send">Send</button>
-        </div>
-        <br>
         <div class="instructions">
             <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=300'); return false;">How to Play</a>
         </div>
