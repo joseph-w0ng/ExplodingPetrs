@@ -4,6 +4,7 @@ module.exports = class Game {
         this.turnCounter = 0;
         this.playerList = []; // array of objects
         this.deck = [];
+        this.playStack = [];
         this._initializeDeck(players.length); 
         this.attackTurns = 0;
         this.shuffle();
@@ -32,6 +33,10 @@ module.exports = class Game {
         return String(this.turnCounter);
     }
 
+    peekGameStack() {
+        return this.playStack[this.playStack.length - 1];
+    }
+
     _hasDuplicates(array) {
         return (new Set(array)).size !== array.length;
     }
@@ -47,11 +52,8 @@ module.exports = class Game {
     }
 
     _initializeDeck(numPlayers) {
-        // push kittens, action, and cat cards
+        // push action and cat cards
         for (var i = 0; i < numPlayers - 1; i++) {   
-            console.log(i);
-
-            // image needed
             this.deck.push({
                 name: "attack",
                 type: "action"
@@ -62,13 +64,11 @@ module.exports = class Game {
                 type: "action"
             });
 
-            // image needed
             this.deck.push({
                 name: "shuffle",
                 type: "action"
             });
 
-            // image needed
             this.deck.push({
                 name: "see future",
                 type: "action"
@@ -79,7 +79,6 @@ module.exports = class Game {
                 type: "action"
             });
 
-            // image needed
             this.deck.push({
                 name: "draw bottom",
                 type: "action"

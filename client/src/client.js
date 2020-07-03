@@ -22,6 +22,26 @@ const sendButton = document.getElementById("send");
 const messageToSend = document.getElementById("chatMsg");
 const endTurnButton = document.getElementById("endTurn");
 
+// Constant variables
+// Use cardToImageMap.get(<key>)
+const cardToImageMap = new Map([
+    ["defuse", "images/defuse.svg"],
+    ["kitten", "images/kitten.svg"],
+    ["nope", "images/nope.svg"],
+    ["skip", "images/skip.svg"],
+    ["attack", "images/attack.svg"],
+    ["favor", "images/favor.svg"],
+    ["see future", "images/seefuture.svg"],
+    ["shuffle", "images/shuffle.svg"],
+    ["draw bottom", "images/drawbottom.svg"],
+    ["cat1", "images/cat1.svg"],
+    ["cat2", "images/cat2.svg"],
+    ["cat3", "images/cat3.svg"],
+    ["cat4", "images/cat4.svg"],
+    ["cat5", "images/cat5.svg"],
+]);
+
+
 // Helper functions
 const showStartOption = (clients) => {
     let parent = document.getElementById("startGame")
@@ -80,9 +100,14 @@ const updateGameState = (game) => { // game object
     console.log(game);
     if (game.playerList[game.turnCounter].clientId === clientId) {
         endTurnButton.style.display = "block";
+        document.getElementById("turn").innerHTML = "It is your turn!"
     }
     else {
         endTurnButton.style.display = "none";
+        document.getElementById("turn").innerHTML = "It is " + game.playerList[game.turnCounter].name + "'s turn!";
+    }
+    if (game.playStack.length > 0) {
+        document.getElementById("stack").src = cardToImageMap.get(game.peekGameStack().name);
     }
 };
 
@@ -191,6 +216,10 @@ messageToSend.addEventListener("keyup", (e) => {
     }
 });
 
+endTurnButton.addEventListener("click", (e) => {
+
+});
+
 playerName.addEventListener("keyup", (e) => {
     if (e.keyCode === 13) {
         if (document.querySelector(".joinForm").style.display === "none") {
@@ -240,7 +269,7 @@ socket.on('playerChanged', (clients) => {
 socket.on('gameStarted', (game) => { // game is a Game() object
     document.querySelector(".lobby").style.display = "none";
     startButton.style.display = "none";
-    document.querySelector(".game").style.display = "block";
+    document.querySelector(".game").style.display = "grid";
     updateGameState(game);
 });
 
@@ -249,6 +278,10 @@ socket.on('newChat', (msg) => {
     node.appendChild(document.createTextNode(msg));
     let parent = document.getElementById("chatBox");
     parent.appendChild(node);
+});
+
+socket.on('gameStateUpdated', (game) => {
+
 });
 
 socket.on('makeMove', () => {
