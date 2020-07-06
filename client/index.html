@@ -7,10 +7,10 @@
     <body>
         <!-- <h1>Exploding Kittens</h1> -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-        <header class="title">
+        <header id="title">
             <h1>Exploding Kittens</h1>
         </div>
-        <div class="intro-wrapper">
+        <div id="intro-wrapper">
             <button id="createOption">Create Game</button>
             <button id="joinOption">Join Game</button>
             <br>
@@ -18,12 +18,12 @@
             <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
             <button class="createForm" id="create">Submit</button>
             <button class="joinForm" id="join">Submit</button>
-            <div class="joinError">
+            <div id="joinError">
                 <p id="errorMsg"></p>
             </div>
         </div>
-        <div class="gameElements">
-            <div class="lobby">
+        <div id="gameElements">
+            <div id="lobby">
                 <div id="displayId">    
                 </div>
                 <div id="otherPlayers">
@@ -39,17 +39,17 @@
                     <button id="leave">Leave Game</button>
                 </div>
             </div>
-            <div class="game">
-                <div class="deck">
+            <div id="game">
+                <div id="deck">
                     <img src="images/back.svg" width=150px height=200px>
                     <img id="stack" src="images/empty.svg" width=150px min-height=200px>
                 </div>
                 <p id="turn"></p>
-                <div class="hand">
+                <div id="hand">
                 </div>
                 <button id='endTurn'>End Turn</button>
             </div>
-            <div class="chat">
+            <div id="chat">
                 <h4>Chat</h4>
                 <ul id="chatBox">
                 </ul>
@@ -57,7 +57,7 @@
                 <button id="send">Send</button>
             </div>
         </div>
-        <div class="instructions">
+        <div id="instructions">
             <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=300'); return false;">How to Play</a>
         </div>
         <script src="/socket.io/socket.io.js"></script>

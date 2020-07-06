@@ -1,3 +1,11 @@
+$(document).ready(() => {
+    $("#lobby").hide();
+    $(".createForm").hide();
+    $(".joinForm").hide();
+    $("#game").hide();
+    $("#gameElements").hide();
+});
+
 // HTML elements
 const socket = io();
 
@@ -113,7 +121,7 @@ const updateGameState = (game) => { // game object
 
 const onFormSubmitted = (e) => {
     e.preventDefault();
-    const input = document.querySelector('#chat');
+    const input = document.getElementById('#chat');
     const text = input.value;
     input.value = '';
 
@@ -122,23 +130,13 @@ const onFormSubmitted = (e) => {
 
 // Event handling
 createOption.addEventListener("click", e => {
-    for (let el of document.querySelectorAll(".joinForm")) {
-        el.style.display = "none";
-    }
-
-    for (let el of document.querySelectorAll(".createForm")) {
-        el.style.display = "block";
-    }
+    $(".joinForm").hide();
+    $(".createForm").show();
 });
 
 joinOption.addEventListener("click", e => {
-    for (let el of document.querySelectorAll(".createForm")) {
-        el.style.display = "none";
-    }
-
-    for (let el of document.querySelectorAll(".joinForm")) {
-        el.style.display = "block";
-    }
+    $(".createForm").hide();
+    $(".joinForm").show();
 });
 
 createButton.addEventListener("click", e => {
@@ -150,9 +148,9 @@ createButton.addEventListener("click", e => {
     playerName.value = '';
     socket.emit('create', payLoad);
 
-    document.querySelector(".intro-wrapper").style.display = "none";
-    document.querySelector(".lobby").style.display = "block"
-    document.querySelector(".chat").style.display = "block";
+    $("#intro-wrapper").hide();
+    $("#lobby").show();
+    $("#chat").show();
 });
 
 joinButton.addEventListener("click", e => {
@@ -168,25 +166,20 @@ joinButton.addEventListener("click", e => {
     playerName.value = '';
     gameIdText.value = '';
     socket.emit('join', payLoad);
-    document.querySelector(".chat").style.display = "block";
+    $("#chat").show();
 });
 
 leaveButton.addEventListener("click", (e) => {
-    for (let el of document.querySelectorAll(".createForm")) {
-        el.style.display = "none";
-    }
-
-    for (let el of document.querySelectorAll(".joinForm")) {
-        el.style.display = "none";
-    }
+    $(".createForm").hide();
+    $(".joinForm").hide();
 
     gameId = null;
 
     socket.disconnect();
 
-    document.querySelector(".intro-wrapper").style.display = "block";
-    document.querySelector(".lobby").style.display = "none";
-    document.querySelector(".chat").style.display = "none";
+    $("#intro-wrapper").show();
+    $("#lobby").hide();
+    $("#chat").hide();
     socket.connect();
 
 });
@@ -236,29 +229,29 @@ socket.on('gameCreated', (id) => {
 });
 
 socket.on('gameJoined', (clients) => {
-    document.querySelector(".intro-wrapper").style.display = "none";
-    document.querySelector(".lobby").style.display = "block";
-    document.getElementById("errorMsg").innerHTML = "";
+    $("#intro-wrapper").hide();
+    $("#gameElements").show();
+    $("#lobby").show();
+    $("#errorMsg").html("");
     showGameId(gameId);
     updatePlayers(clients, playerList);
     showStartOption(clients);
 });
 
 socket.on('gameJoinError', () => {
-   document.getElementById("errorMsg").innerHTML = "Error: Game ID " + gameId + " was not found.";
+    $("#errorMsg").html("Error: Game ID " + gameId + " was not found.");
 });
 
 socket.on('gameFull', () => {
-    document.getElementById("errorMsg").innerHTML = "Error: Requested game is full, max 8 players.";
+    $("#errorMsg").html("Error: Requested game is full, max 8 players.");
 });
 
 socket.on('invalidName', () => {
-    // Names should be unique
-    document.getElementById("errorMsg").innerHTML = "Error: Please enter a name that has not already been used.";
+    $("#errorMsg").html("Error: Please enter a name that has not already been used.");
 });
 
 socket.on('alreadyStarted', () => {
-    document.getElementById("errorMsg").innerHTML = "Error: Game has already started."
+    $("#errorMsg").html("Error: Game has already started.");
 })
 
 socket.on('playerChanged', (clients) => {
@@ -267,9 +260,12 @@ socket.on('playerChanged', (clients) => {
 });
 
 socket.on('gameStarted', (game) => { // game is a Game() object
-    document.querySelector(".lobby").style.display = "none";
-    startButton.style.display = "none";
-    document.querySelector(".game").style.display = "grid";
+    console.log("start");
+    $("#lobby").hide();
+    $("#startButton").hide();
+    $("#game").show();
+    // document.getElementById("game").style.display = "grid";
+    // document.getElementById("gameElements").style.display = "grid";
     updateGameState(game);
 });
 

@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
         }
 
         for (var i = 0; i < game.clients.length; i++) {
-            if (trim(game.clients[i].name) === trim(name) || name === '') {
+            if (trim(game.clients[i].name) === trim(name) || name.length === 0) {
                 io.to(clientId).emit('invalidName');
                 return;
             }

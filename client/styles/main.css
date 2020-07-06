@@ -1,4 +1,4 @@
-.intro-wrapper {
+#intro-wrapper {
     display: block;
     height: 80vh;
     width: 100%;
@@ -12,7 +12,7 @@
     width: 100px;
 }
 
-.gameElements {
+#gameElements {
     display: grid;
     grid-template-columns: 60% 40%;
     height: 90%;
@@ -25,40 +25,44 @@
 }
 
 .createForm {
-    display: none;
+    display: grid;
+    grid-template-columns: 100%;
     height: 50px;
     width: 200px;
     font-size: 20px;
+    margin-top: 10px;
 }
 
 .joinForm {
-    display: none;
+    display: grid;
+    grid-template-columns: 100%;
     height: 50px;
     width: 200px;
     font-size: 20px;
+    margin-top: 10px;
 }
 
-.title {
+#title {
     width: 100%;
     margin: 0px;
     float: left;
 }
 
-.instructions {
+#instructions {
     float: none;
     width: 100px;
     margin: 0px;
 }
 
-.lobby {
-    display: none;
+#lobby {
+    display: block;
     width: 50%;
     height: 400px;
     margin: 0px;
     float: left;
 }
 
-.joinError {
+#joinError {
     color: red;
     font-size: 10px;
 }
@@ -71,8 +75,8 @@
     display: none;
 }
 
-.game {
-    display: none;
+#game {
+    display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 40% 10% 40% 10%;
     width: 100%;
@@ -81,8 +85,9 @@
 }
 
 #deck {
-    width: 50%;
-    height: 10%;
+    display: block;
+    width: 100%;
+    height: auto;
     border: 1px solid black;
 }
 
@@ -90,9 +95,12 @@
     width: 50%;
     height: 50%;
     border: 1px solid black;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
-.chat {
+#chat {
     display: none;
     font-family: Verdana;
     font-size: 12px;
@@ -119,13 +127,12 @@
 }
 
 #endTurn {
-    display: none;
     height: 20px;
     width: 100px;
 }
 
 #deck {
-    display: grid;
+    /* display: grid; */
     grid-template-columns: 50% 50%;
-    width: 40%;
+    width: 100%;
 }
