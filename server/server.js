@@ -19,6 +19,32 @@ const allClients = {};
 const games = {};
 
 // Helper functions
+const createClientGame = (clientId, game) => {
+    let userTurn = game.playerList[game.turnCounter].clientId;
+    let name = game.playerList[game.turnCounter].name;
+    let hand = game.playerList.find(obj => {
+        return obj.clientId === clientId;
+    });
+
+    let players = [];
+    for (let player of game.playerList) {
+        players.push({
+            name: player.name,
+            alive: player.alive
+        })
+    }
+    let returnObject = {
+        turn: userTurn,
+        turnName: name,
+        hand: hand.hand,
+        deckLength: game.deck.length,
+        stack: game.playStack,
+        players: players,
+    };
+
+    return returnObject;
+};
+
 const trim = (str) => {
     return String(str).replace(/^\s+|\s+$/g, '');
 };
@@ -155,7 +181,10 @@ io.on('connection', (socket) => {
         const game = games[gameId];
         game.game = new Game(game.clients);
         game.started = true;
-        io.to(gameId).emit('gameStarted', game.game);
+
+        for (let client of game.clients) {
+            io.to(client.clientId).emit('gameStarted', createClientGame(client.clientId, game.game));
+        }
     });
 
     // Move made

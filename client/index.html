@@ -9,7 +9,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <header id="title">
             <h1>Exploding Kittens</h1>
-        </div>
+        </header>
         <div id="intro-wrapper">
             <button id="createOption">Create Game</button>
             <button id="joinOption">Join Game</button>
@@ -39,15 +39,25 @@
                     <button id="leave">Leave Game</button>
                 </div>
             </div>
-            <div id="game">
-                <div id="deck">
-                    <img src="images/back.svg" width=150px height=200px>
-                    <img id="stack" src="images/empty.svg" width=150px min-height=200px>
+            <div id="gameContainer">
+                <div id="game">
+                    <div id="deck">
+                        <img src="images/back.svg" width=150px height=200px>
+                        <img id="stack" src="images/empty.svg" width=150px min-height=200px>
+                        <div id="cardsLeft"></div>
+                    </div>
+                    <p id="turn"></p>
+                    <div id="hand">
+                    </div>
+                    <button id="play">Play Cards</button>
+                    <button id='endTurn'>End Turn</button>
                 </div>
-                <p id="turn"></p>
-                <div id="hand">
+                
+                <div id="players">
+                    <h4>Players:</h4>
+                    <ul id="playersAlive">
+                    </ul>
                 </div>
-                <button id='endTurn'>End Turn</button>
             </div>
             <div id="chat">
                 <h4>Chat</h4>

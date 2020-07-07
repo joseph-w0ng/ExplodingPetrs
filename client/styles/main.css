@@ -14,9 +14,14 @@
 
 #gameElements {
     display: grid;
-    grid-template-columns: 60% 40%;
+    grid-template-columns: 80% 20%;
     height: 90%;
     border: 1px solid blue;
+}
+
+#gameContainer {
+    display: grid;
+    grid-template-columns: 75% 25%;
 }
 
 #joinOption {
@@ -78,10 +83,9 @@
 #game {
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: 40% 10% 40% 10%;
+    grid-template-rows: 40% 10% 40% 20px 20px;
     width: 100%;
     height: 100%;
-    border: 1px solid red;
 }
 
 #deck {
@@ -92,12 +96,21 @@
 }
 
 #hand {
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
     border: 1px solid black;
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
+}
+
+.card {
+    display: inline-block;
+    width: 150px;
+    height: 190px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 5px;
 }
 
 #chat {
@@ -131,8 +144,16 @@
     width: 100px;
 }
 
-#deck {
-    /* display: grid; */
-    grid-template-columns: 50% 50%;
-    width: 100%;
+#play {
+    display: none;
+    height: 20px;
+    width: 100px;
 }
+
+#cardsLeft {
+    display: inline;
+}
+
+.selected{
+    border: 2px solid blue;
+ }

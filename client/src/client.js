@@ -1,11 +1,3 @@
-$(document).ready(() => {
-    $("#lobby").hide();
-    $(".createForm").hide();
-    $(".joinForm").hide();
-    $("#game").hide();
-    $("#gameElements").hide();
-});
-
 // HTML elements
 const socket = io();
 
@@ -16,6 +8,7 @@ socket.on('connect', () => {
 
 let gameId = null;
 let name = null;
+let currentTurn = false;
 
 const playerList = document.getElementById("playerList");
 const createOption = document.getElementById("createOption");
@@ -28,10 +21,10 @@ const leaveButton = document.getElementById("leave");
 const startButton = document.getElementById("start");
 const sendButton = document.getElementById("send");
 const messageToSend = document.getElementById("chatMsg");
-const endTurnButton = document.getElementById("endTurn");
 
 // Constant variables
 // Use cardToImageMap.get(<key>)
+// Need to change cat mappings back
 const cardToImageMap = new Map([
     ["defuse", "images/defuse.svg"],
     ["kitten", "images/kitten.svg"],
@@ -43,10 +36,10 @@ const cardToImageMap = new Map([
     ["shuffle", "images/shuffle.svg"],
     ["draw bottom", "images/drawbottom.svg"],
     ["cat1", "images/cat1.svg"],
-    ["cat2", "images/cat2.svg"],
-    ["cat3", "images/cat3.svg"],
-    ["cat4", "images/cat4.svg"],
-    ["cat5", "images/cat5.svg"],
+    ["cat2", "images/cat1.svg"],
+    ["cat3", "images/cat1.svg"],
+    ["cat4", "images/cat1.svg"],
+    ["cat5", "images/cat1.svg"],
 ]);
 
 
@@ -104,18 +97,41 @@ const updatePlayers = (players, list) => {
 };
 
 // TODO: change so that client only sees what is necessary, no need to send entire game
-const updateGameState = (game) => { // game object
+const updateGameState = (game) => { // client game object
     console.log(game);
-    if (game.playerList[game.turnCounter].clientId === clientId) {
-        endTurnButton.style.display = "block";
-        document.getElementById("turn").innerHTML = "It is your turn!"
+    if (game.turn === clientId) {
+        $("#turn").html("It is your turn!");
+        $("#endTurn").show();
+        $("#play").show();
+        currentTurn = true;
     }
     else {
-        endTurnButton.style.display = "none";
-        document.getElementById("turn").innerHTML = "It is " + game.playerList[game.turnCounter].name + "'s turn!";
+        $("#endTurn").hide();
+        $("#turn").html("It is " + game.turnName + "'s turn!");
+        currentTurn = false;
     }
-    if (game.playStack.length > 0) {
-        document.getElementById("stack").src = cardToImageMap.get(game.peekGameStack().name);
+    if (game.stack.length > 0) {
+        document.getElementById("stack").src = cardToImageMap.get(game.stack[game.stack.length - 1]);
+    }
+
+    $("#hand").empty();
+    for (let card of game.hand) {
+        let src = cardToImageMap.get(card.name);
+        $("#hand").prepend($('<img src="' + src + '" class=card alt=idk/>'));
+    }
+    
+    $("#cardsLeft").html(game.deckLength + " cards remaining.");
+    $("#playersAlive").empty();
+    
+
+    for (let player of game.players) {
+        if (player.alive) {
+            $("#playersAlive").append('<li>' + player.name + '</li>');
+        }
+        else {
+            $("#playersAlive").append('<li><del>' + player.name + '</del></li>');
+        }
+        
     }
 };
 
@@ -128,167 +144,180 @@ const onFormSubmitted = (e) => {
     socket.emit('message', text);
 };
 
-// Event handling
-createOption.addEventListener("click", e => {
-    $(".joinForm").hide();
-    $(".createForm").show();
-});
-
-joinOption.addEventListener("click", e => {
-    $(".createForm").hide();
-    $(".joinForm").show();
-});
-
-createButton.addEventListener("click", e => {
-    name = $.trim(playerName.value)
-    const payLoad = {
-        "clientId": clientId,
-        "name": name
-    }; 
-    playerName.value = '';
-    socket.emit('create', payLoad);
-
-    $("#intro-wrapper").hide();
-    $("#lobby").show();
-    $("#chat").show();
-});
-
-joinButton.addEventListener("click", e => {
-    gameId = gameIdText.value;
-    name = $.trim(playerName.value)
-
-    const payLoad = {
-        "clientId": clientId,
-        "gameId": $.trim(gameId),
-        "name": name
-    };
-
-    playerName.value = '';
-    gameIdText.value = '';
-    socket.emit('join', payLoad);
-    $("#chat").show();
-});
-
-leaveButton.addEventListener("click", (e) => {
-    $(".createForm").hide();
-    $(".joinForm").hide();
-
-    gameId = null;
-
-    socket.disconnect();
-
-    $("#intro-wrapper").show();
+// Event 
+$(document).ready(() => {
     $("#lobby").hide();
-    $("#chat").hide();
-    socket.connect();
+    $(".createForm").hide();
+    $(".joinForm").hide();
+    $("#gameElements").hide();
+    $("#gameContainer").hide();
 
-});
-
-startButton.addEventListener("click", (e) => {
-    socket.emit('ready', gameId);
-});
-
-sendButton.addEventListener("click", (e) => {
-    let payload = {
-        "gameId": gameId,
-        "name": name,
-        "message": messageToSend.value
-    };
-    messageToSend.value = '';
-    // Automatically scroll down
-    $('#chatBox').stop().animate ({
-        scrollTop: $('#chatBox')[0].scrollHeight
+    createOption.addEventListener("click", e => {
+        $(".joinForm").hide();
+        $(".createForm").show();
     });
-    socket.emit('message', payload);
-});
 
-messageToSend.addEventListener("keyup", (e) => {
-    if (e.keyCode === 13) {
-        e.preventDefault();
-        sendButton.click();
-    }
-});
+    joinOption.addEventListener("click", e => {
+        $(".createForm").hide();
+        $(".joinForm").show();
+    });
 
-endTurnButton.addEventListener("click", (e) => {
+    createButton.addEventListener("click", e => {
+        name = $.trim(playerName.value)
+        const payLoad = {
+            "clientId": clientId,
+            "name": name
+        }; 
+        playerName.value = '';
+        socket.emit('create', payLoad);
 
-});
+        $("#intro-wrapper").hide();
+        $("#lobby").show();
+        $("#chat").show();
+    });
 
-playerName.addEventListener("keyup", (e) => {
-    if (e.keyCode === 13) {
-        if (document.querySelector(".joinForm").style.display === "none") {
-            createButton.click();
+    joinButton.addEventListener("click", e => {
+        gameId = gameIdText.value;
+        name = $.trim(playerName.value)
+
+        const payLoad = {
+            "clientId": clientId,
+            "gameId": $.trim(gameId),
+            "name": name
+        };
+
+        playerName.value = '';
+        gameIdText.value = '';
+        socket.emit('join', payLoad);
+        $("#chat").show();
+    });
+
+    leaveButton.addEventListener("click", (e) => {
+        $(".createForm").hide();
+        $(".joinForm").hide();
+
+        gameId = null;
+
+        socket.disconnect();
+
+        $("#intro-wrapper").show();
+        $("#lobby").hide();
+        $("#chat").hide();
+        socket.connect();
+
+    });
+
+    startButton.addEventListener("click", (e) => {
+        socket.emit('ready', gameId);
+    });
+
+    sendButton.addEventListener("click", (e) => {
+        let payload = {
+            "gameId": gameId,
+            "name": name,
+            "message": messageToSend.value
+        };
+        messageToSend.value = '';
+        // Automatically scroll down
+        $('#chatBox').stop().animate ({
+            scrollTop: $('#chatBox')[0].scrollHeight
+        });
+        socket.emit('message', payload);
+    });
+
+    messageToSend.addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            sendButton.click();
         }
-        else {
-            joinButton.click();
+    });
+
+    $("#endTurn").click(() => {
+
+    });
+
+    $("#hand").on('click', 'img', function() {
+        if (!currentTurn) {
+            return;
         }
-    }
-})
-// Server events
-socket.on('gameCreated', (id) => {
-    gameId = id;
-});
 
-socket.on('gameJoined', (clients) => {
-    $("#intro-wrapper").hide();
-    $("#gameElements").show();
-    $("#lobby").show();
-    $("#errorMsg").html("");
-    showGameId(gameId);
-    updatePlayers(clients, playerList);
-    showStartOption(clients);
-});
+        $(this).toggleClass("selected");
+    });
 
-socket.on('gameJoinError', () => {
-    $("#errorMsg").html("Error: Game ID " + gameId + " was not found.");
-});
+    playerName.addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) {
+            if (document.querySelector(".joinForm").style.display === "none") {
+                createButton.click();
+            }
+            else {
+                joinButton.click();
+            }
+        }
+    })
+    // Server events
+    socket.on('gameCreated', (id) => {
+        gameId = id;
+    });
 
-socket.on('gameFull', () => {
-    $("#errorMsg").html("Error: Requested game is full, max 8 players.");
-});
+    socket.on('gameJoined', (clients) => {
+        $("#intro-wrapper").hide();
+        $("#gameElements").show();
+        $("#lobby").show();
+        $("#errorMsg").html("");
+        showGameId(gameId);
+        updatePlayers(clients, playerList);
+        showStartOption(clients);
+    });
 
-socket.on('invalidName', () => {
-    $("#errorMsg").html("Error: Please enter a name that has not already been used.");
-});
+    socket.on('gameJoinError', () => {
+        $("#errorMsg").html("Error: Game ID " + gameId + " was not found.");
+    });
 
-socket.on('alreadyStarted', () => {
-    $("#errorMsg").html("Error: Game has already started.");
-})
+    socket.on('gameFull', () => {
+        $("#errorMsg").html("Error: Requested game is full, max 8 players.");
+    });
 
-socket.on('playerChanged', (clients) => {
-    updatePlayers(clients, playerList);
-    showStartOption(clients);
-});
+    socket.on('invalidName', () => {
+        $("#errorMsg").html("Error: Please enter a name that has not already been used.");
+    });
 
-socket.on('gameStarted', (game) => { // game is a Game() object
-    console.log("start");
-    $("#lobby").hide();
-    $("#startButton").hide();
-    $("#game").show();
-    // document.getElementById("game").style.display = "grid";
-    // document.getElementById("gameElements").style.display = "grid";
-    updateGameState(game);
-});
+    socket.on('alreadyStarted', () => {
+        $("#errorMsg").html("Error: Game has already started.");
+    })
 
-socket.on('newChat', (msg) => {
-    var node = document.createElement("li");
-    node.appendChild(document.createTextNode(msg));
-    let parent = document.getElementById("chatBox");
-    parent.appendChild(node);
-});
+    socket.on('playerChanged', (clients) => {
+        updatePlayers(clients, playerList);
+        showStartOption(clients);
+    });
 
-socket.on('gameStateUpdated', (game) => {
+    socket.on('gameStarted', (game) => { // game is a Game() object
+        $("#lobby").hide();
+        $("#startButton").hide();
+        $("#gameContainer").show();
+        updateGameState(game);
+    });
 
-});
+    socket.on('newChat', (msg) => {
+        var node = document.createElement("li");
+        node.appendChild(document.createTextNode(msg));
+        let parent = document.getElementById("chatBox");
+        parent.appendChild(node);
+    });
 
-socket.on('makeMove', () => {
+    socket.on('gameStateUpdated', (game) => {
+        updateGameState(game);
+    });
 
-});
+    socket.on('makeMove', () => {
 
-socket.on('invalidMove', () => {
+    });
 
-});
+    socket.on('invalidMove', () => {
 
-socket.on('gameOver', () => {
+    });
 
+    socket.on('gameOver', () => {
+
+    });
 });
 

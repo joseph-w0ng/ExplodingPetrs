@@ -14,6 +14,7 @@ module.exports = class Game {
             this.playerList.push({
                 clientId: players[i].clientId,
                 name: players[i].name,
+                alive: true,
                 hand: []
             })
 
@@ -31,10 +32,6 @@ module.exports = class Game {
 
     toString() {
         return String(this.turnCounter);
-    }
-
-    peekGameStack() {
-        return this.playStack[this.playStack.length - 1];
     }
 
     _hasDuplicates(array) {
