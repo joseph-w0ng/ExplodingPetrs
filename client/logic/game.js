@@ -1,3 +1,5 @@
+const { isEmptyObject } = require("jquery");
+
 module.exports = class Game {
     // players = clients
     constructor(players) {
@@ -9,6 +11,7 @@ module.exports = class Game {
         this.attackTurns = 0;
         this.shuffle();
         this.drawFromBottom = false;
+        this.playersAlive = players.length;
         // initialize playerList and deal everyone a hand
         for (var i = 0; i < players.length; i++) {
             this.playerList.push({
@@ -28,6 +31,7 @@ module.exports = class Game {
             }
         }
         this._addBombs(players.length-1);
+        this._debugDeck(players.length-1);
     }
 
     toString() {
@@ -46,6 +50,11 @@ module.exports = class Game {
                 type: "bomb"
             })
         }
+    }
+
+    _debugDeck(numPlayers) {
+        this.deck = [];
+        this._addBombs(4);
     }
 
     _initializeDeck(numPlayers) {
@@ -188,10 +197,54 @@ module.exports = class Game {
         return false;
     }
 
+    draw() {
+        return this.deck.pop();
+    }
+
+    playDefuse(index) {
+        this.deck.splice(index-1, 0, {
+            name: "kitten",
+            type: "bomb"
+        })
+        if (this.attackTurns > 0) {
+            this.attackTurns -= 1;
+            return 0;
+        }
+        this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
+        console.log(this.turnCounter);
+    }
+
     endTurn() {
         // Defuse logic
-        while (this.attackTurns > 0) {
+        // returns 0 if everything is fine
+        // returns 1 if action needed (defuse)
+        // returns 2 if player died
+        let player = this.playerList[this.turnCounter];
+        while (!player.alive) {
+            this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
+        }
+
+        let card = this.draw();
+        console.log(card.name);
+        if (card.type === "bomb") {
+            if (!player.hand.some(item => item.name === 'defuse')) {
+                this.playerList[this.turnCounter].alive = false;
+                this.playersAlive -= 1;
+                this.playStack.push(card);
+                return 2;
+            }
+            else {
+                return 1;
+            }
+        }
+
+        else {
+            player.hand.push(card);
+        }
+
+        if (this.attackTurns > 0) {
             this.attackTurns -= 1;
+            return 0;
         }
         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
         console.log(this.turnCounter);

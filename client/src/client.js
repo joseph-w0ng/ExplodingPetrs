@@ -75,6 +75,16 @@ const showGameId = (id) => {
     document.getElementById("displayId").innerHTML = "Your game id is: " + id;
 };
 
+const validOrderInput = (val) => {
+    if (parseInt(val) === "NaN") {
+        return false;
+    }
+    if (parseInt(val) > parseInt($("#cardsLeft").html().split(" ")[0]) || parseInt(val) <= 0) {
+        return false;
+    }
+    return true;
+};
+
 const updatePlayers = (players, list) => {
     $("#playerList").empty();
     for (let player of players) {
@@ -98,7 +108,9 @@ const updatePlayers = (players, list) => {
 
 // TODO: change so that client only sees what is necessary, no need to send entire game
 const updateGameState = (game) => { // client game object
-    console.log(game);
+    $("#explodedText").hide();
+    $("#explodedText").html('');
+
     if (game.turn === clientId) {
         $("#turn").html("It is your turn!");
         $("#endTurn").show();
@@ -106,12 +118,13 @@ const updateGameState = (game) => { // client game object
         currentTurn = true;
     }
     else {
+        $("#play").hide();
         $("#endTurn").hide();
         $("#turn").html("It is " + game.turnName + "'s turn!");
         currentTurn = false;
     }
     if (game.stack.length > 0) {
-        document.getElementById("stack").src = cardToImageMap.get(game.stack[game.stack.length - 1]);
+        document.getElementById("stack").src = cardToImageMap.get(game.stack[game.stack.length - 1].name);
     }
 
     $("#hand").empty();
@@ -151,6 +164,11 @@ $(document).ready(() => {
     $(".joinForm").hide();
     $("#gameElements").hide();
     $("#gameContainer").hide();
+    $("target").hide();
+    $("#order").hide();
+    $("#future").hide();
+    $("#pickFromStack").hide();
+    $("#exploded").hide();
 
     createOption.addEventListener("click", e => {
         $(".joinForm").hide();
@@ -233,7 +251,7 @@ $(document).ready(() => {
     });
 
     $("#endTurn").click(() => {
-
+        socket.emit('endTurn', gameId);
     });
 
     $("#hand").on('click', 'img', function() {
@@ -242,6 +260,21 @@ $(document).ready(() => {
         }
 
         $(this).toggleClass("selected");
+    });
+
+    $("#submitIndex").click(() => {
+        let index = $("#orderVal").val();
+        $("#orderVal").val('');
+        if (!validOrderInput(index)) {
+            let cardsRemaining = $("#cardsLeft").html().split(" ")[0];
+            $("#invalidOrder").html("Please enter a valid number between 1 and " + cardsRemaining);
+            $("#invalidOrder").show();
+            return;
+        }
+        $("#order").hide();
+        $("#invalidOrder").hide();
+        
+        socket.emit('defused', index, gameId);
     });
 
     playerName.addEventListener("keyup", (e) => {
@@ -306,6 +339,16 @@ $(document).ready(() => {
 
     socket.on('gameStateUpdated', (game) => {
         updateGameState(game);
+    });
+
+    socket.on('defuse', (game) => {
+        updateGameState(game);
+        $("#order").show();
+        
+    });
+
+    socket.on('bombDrawn', (playerName) => {
+        $("#explodedText").html(playerName + " has drawn an exploding kitten!");
     });
 
     socket.on('makeMove', () => {

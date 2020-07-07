@@ -14,14 +14,14 @@
 
 #gameElements {
     display: grid;
-    grid-template-columns: 80% 20%;
+    grid-template-columns: 70% 30%;
     height: 90%;
     border: 1px solid blue;
 }
 
 #gameContainer {
     display: grid;
-    grid-template-columns: 75% 25%;
+    grid-template-columns: 65% 35%;
 }
 
 #joinOption {
@@ -67,7 +67,7 @@
     float: left;
 }
 
-#joinError {
+.error {
     color: red;
     font-size: 10px;
 }
@@ -156,4 +156,13 @@
 
 .selected{
     border: 2px solid blue;
+ }
+
+ #otherElements {
+     display: grid;
+     grid-template-rows: 50% 50%;
+ }
+
+ #util {
+     border: 1px solid black;
  }

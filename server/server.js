@@ -63,6 +63,11 @@ function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
 }
  
+const sendToAll = (clientList, game) => {
+    for (let client of clientList) {
+        io.to(client.clientId).emit('gameStateUpdated', createClientGame(client.clientId, game));
+    }
+};
 // const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 
 
@@ -115,8 +120,8 @@ io.on('connection', (socket) => {
             "started": false
         };
         // On start game, create new game
-        const game = games[gameId];
-        game.clients.push({
+        const room = games[gameId];
+        room.clients.push({
             "clientId": clientId,
             "name": name,
             "isAdmin": true
@@ -126,7 +131,7 @@ io.on('connection', (socket) => {
 
         socket.join(gameId);
         io.to(payload.clientId).emit('gameCreated', gameId);
-        io.to(payload.clientId).emit('gameJoined', game.clients);
+        io.to(payload.clientId).emit('gameJoined', room.clients);
     });
 
     // On game join
@@ -139,26 +144,26 @@ io.on('connection', (socket) => {
             io.to(payload.clientId).emit('gameJoinError');
             return;
         }
-        const game = games[gameId];
+        const room = games[gameId];
         
-        if (game.started) {
+        if (room.started) {
             io.to(payload.clientId).emit('alreadyStarted');
             return;
         }
 
         // Max players = 8
-        if (game.clients.length >= 8) {
+        if (room.clients.length >= 8) {
             io.to(payload.clientId).emit('gameFull');
             return;
         }
 
-        for (var i = 0; i < game.clients.length; i++) {
-            if (trim(game.clients[i].name) === trim(name) || name.length === 0) {
+        for (var i = 0; i < room.clients.length; i++) {
+            if (trim(room.clients[i].name) === trim(name) || name.length === 0) {
                 io.to(clientId).emit('invalidName');
                 return;
             }
         }
-        game.clients.push({
+        room.clients.push({
             "clientId": clientId,
             "name": name,
             "isAdmin": false
@@ -166,9 +171,9 @@ io.on('connection', (socket) => {
 
         allClients[clientId] = gameId;
 
-        io.in(gameId).emit("playerChanged", game.clients);
+        io.in(gameId).emit("playerChanged", room.clients);
         socket.join(gameId);
-        io.to(clientId).emit("gameJoined", game.clients);
+        io.to(clientId).emit("gameJoined", room.clients);
         
     });
     // Chat message
@@ -178,18 +183,42 @@ io.on('connection', (socket) => {
     });
     // Game ready to start
     socket.on('ready', (gameId) => {
-        const game = games[gameId];
-        game.game = new Game(game.clients);
-        game.started = true;
+        const room = games[gameId];
+        room.game = new Game(room.clients);
+        const game = room.game;
+        room.started = true;
 
-        for (let client of game.clients) {
-            io.to(client.clientId).emit('gameStarted', createClientGame(client.clientId, game.game));
+        for (let client of room.clients) {
+            io.to(client.clientId).emit('gameStarted', createClientGame(client.clientId, game));
         }
     });
 
-    // Move made
-    socket.on('move', (gameId) => {
+    // Player chose a place to defuse
+    socket.on('defused', (index, gameId) => {
+        const room = games[gameId];
+        const game = room.game;
+        game.playDefuse(index);
+        sendToAll(room.clients, game);
+    });
 
+    // Move made
+    socket.on('endTurn', (gameId) => {
+        const room = games[gameId];
+        const game = room.game;
+        let status = game.endTurn();
+        let client = game.playerList[game.turnCounter];
+
+        if (status === 1) {
+            // Also show that a player drew an exploding kitten
+            let index = client.hand.findIndex(card => card.name === "defuse");
+            client.hand.splice(index, 1);
+            io.to(client.clientId).emit('defuse', createClientGame(client.clientId, game));
+        }
+
+        if (status === 1 || status === 2) {
+            io.to(gameId).emit('bombDrawn', client.name);
+        }
+        sendToAll(room.clients, game);
     });
 });
 

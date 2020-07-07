@@ -18,7 +18,7 @@
             <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
             <button class="createForm" id="create">Submit</button>
             <button class="joinForm" id="join">Submit</button>
-            <div id="joinError">
+            <div class="error">
                 <p id="errorMsg"></p>
             </div>
         </div>
@@ -53,10 +53,32 @@
                     <button id='endTurn'>End Turn</button>
                 </div>
                 
-                <div id="players">
-                    <h4>Players:</h4>
-                    <ul id="playersAlive">
-                    </ul>
+                <div id="otherElements">
+                    <div id="players">
+                        <h4>Players:</h4>
+                        <ul id="playersAlive">
+                        </ul>
+                    </div>
+                    <div id="util">
+                        <div id="target">
+                        </div>
+                        <div id="order">
+                            <label for="orderVal">You drew an exploding kitten! Place the kitten back in the deck (1 = top of the deck):</label>
+                            <input type="text" id="orderVal" placeholder="1">
+                            <button id="submitIndex">Submit!</button>
+                            <p class="error" id="invalidOrder"></p>
+                        </div>
+                        
+                        <div id="future">
+                            <!-- For see the future implementation -->
+                        </div>
+                        <div id="pickFromStack">
+                            <!-- For 5 cat implementation -->
+                        </div>
+                        <div id="exploded">
+                            <p id="explodedText"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="chat">
