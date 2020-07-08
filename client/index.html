@@ -11,13 +11,16 @@
             <h1>Exploding Kittens</h1>
         </header>
         <div id="intro-wrapper">
-            <button id="createOption">Create Game</button>
-            <button id="joinOption">Join Game</button>
-            <br>
-            <input type="text" class="joinForm" id="gameId" placeholder="Game ID">
-            <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
-            <button class="createForm" id="create">Submit</button>
-            <button class="joinForm" id="join">Submit</button>
+            <div id="buttons">
+                <button id="createOption">Create Game</button>
+                <button id="joinOption">Join Game</button>
+            </div>
+            <div id="form">
+                <input type="text" class="joinForm" id="gameId" placeholder="Game ID">
+                <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
+                <button class="createForm" id="create">Submit</button>
+                <button class="joinForm" id="join">Submit</button>
+             </div>
             <div class="error">
                 <p id="errorMsg"></p>
             </div>

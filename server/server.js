@@ -214,10 +214,13 @@ io.on('connection', (socket) => {
             let index = client.hand.findIndex(card => card.name === "defuse");
             client.hand.splice(index, 1);
             io.to(client.clientId).emit('defuse', createClientGame(client.clientId, game));
+            game.playStack.push({
+                name: "defuse",
+                type: "action"
+            })
         }
 
         if (status === 1 || status === 2) {
-            console.log("message");
             io.to(gameId).emit('bombDrawn', client.name);
 
             if (status === 2 && game.playersAlive === 1) {

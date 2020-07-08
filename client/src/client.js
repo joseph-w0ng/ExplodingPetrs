@@ -124,6 +124,7 @@ const updateGameState = (game) => { // client game object
         currentTurn = false;
     }
     if (game.stack.length > 0) {
+        console.log(game.stack[game.stack.length - 1].name);
         document.getElementById("stack").src = cardToImageMap.get(game.stack[game.stack.length - 1].name);
     }
 
@@ -268,8 +269,11 @@ $(document).ready(() => {
         $("#orderVal").val('');
         if (!validOrderInput(index)) {
             let cardsRemaining = $("#cardsLeft").html().split(" ")[0];
-            $("#invalidOrder").html("Please enter a valid number between 1 and " + cardsRemaining);
-            $("#invalidOrder").show();
+            if (cardsRemaining != 0) {
+                $("#invalidOrder").html("Please enter a valid number between 1 and " + cardsRemaining);
+                $("#invalidOrder").show();
+            }
+            
             return;
         }
         $("#order").hide();
@@ -375,10 +379,6 @@ $(document).ready(() => {
     });
 
     socket.on('invalidMove', () => {
-
-    });
-
-    socket.on('gameOver', () => {
 
     });
 });

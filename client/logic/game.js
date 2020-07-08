@@ -202,10 +202,11 @@ module.exports = class Game {
     }
 
     playDefuse(index) {
-        this.deck.splice(index-1, 0, {
+        this.deck.splice(this.deck.length-index+1, 0, {
             name: "kitten",
             type: "bomb"
         })
+
         if (this.attackTurns > 0) {
             this.attackTurns -= 1;
             return 0;
