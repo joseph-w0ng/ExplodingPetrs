@@ -54,7 +54,12 @@ module.exports = class Game {
 
     _debugDeck(numPlayers) {
         this.deck = [];
-        this._addBombs(4);
+        for (var i = 0; i < 6; i++) {
+            this.deck.push({
+                name: "see future",
+                type: "action"
+            });
+        }
     }
 
     _initializeDeck(numPlayers) {
@@ -144,33 +149,12 @@ module.exports = class Game {
         }
     }
 
-    // Returns false if invalid
-    playCards(cards, playerName, targetCard) {
-        // Action card logic
-
+    isValidCombination(cards) {
         if (cards.length === 1) {
             if (cards[0].type != "action") {
                 return false;
             }
-
-            switch(cards[0].name) {
-                case "attack":
-                    return true;
-                case "favor":
-                    return true;
-                case "skip":
-                    return true;
-                case "shuffle":
-                    this.shuffle();
-                    return true;
-                case "see future":
-                    return true;
-                case "nope":
-                    return true; // Not always
-                case "draw bottom":
-                    this.drawFromBottom = true;
-                    return true;
-            }
+            return true;
         }
 
         else if (cards.length === 2) {
@@ -196,9 +180,85 @@ module.exports = class Game {
         }
         return false;
     }
+   
+    playCards(cards) { 
+        // Return codes:
+        // 0: everything is fine
+        // 1: invalid move
+        // 2: target needed
+        // 3: target + card needed
+        // 4: card needed
+        // 5: if turn changed
+        // 6: something needs to be displayed
+        // Action card logic
+        let player = this.playerList[this.turnCounter];
+        let playedCards = [];
+        let indices = [];
+
+        for (let card of cards) {
+            let index = player.hand.findIndex(c => c.name === card);
+            playedCards.push(player.hand[index]);
+            indices.push(index);
+        }
+
+        if (!this.isValidCombination(playedCards)) {
+            return 1;
+        }
+
+        for (let index of indices) {
+            this.playStack.push(player.hand[index]);
+            player.hand.splice(index, 1);
+        }
+
+        if (playedCards.length === 1) {
+            switch(playedCards[0].name) {
+                case "attack":
+                    this.attackTurns += 2;
+                    this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
+                    return 5;
+                case "favor":
+                    return 2;
+                case "skip":
+                    if (this.attackTurns === 0) {
+                        this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
+                        return 5;
+                    }
+                    else {
+                        this.attackTurns -= 1;
+                    }
+                case "shuffle":
+                    this.shuffle();
+                    return 0;
+                case "see future":
+                    return 6;
+                // case "nope":
+                //     return true; // Not always
+                case "draw bottom":
+                    this.drawFromBottom = true;
+                    return 0;
+            }
+        }
+
+        else if (playedCards.length === 2) {
+            return 2;
+        }
+
+        else if (playedCards.length === 3) {
+            return 3;
+        }
+
+        else if (playedCards.length === 5) {
+            return 4;
+        }
+        return 1;
+    }
 
     draw() {
         return this.deck.pop();
+    }
+
+    drawBottom() {
+        return this.deck.shift();
     }
 
     playDefuse(index) {
@@ -209,7 +269,7 @@ module.exports = class Game {
 
         if (this.attackTurns > 0) {
             this.attackTurns -= 1;
-            return 0;
+            return;
         }
         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
     }
@@ -224,7 +284,15 @@ module.exports = class Game {
             this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
         }
 
-        let card = this.draw();
+        let card = null;
+        if (this.drawFromBottom) {
+            card = this.drawBottom();
+            this.drawFromBottom = false;
+        }
+        else {
+            card = this.draw();
+        }
+
         if (card.type === "bomb") {
             if (!player.hand.some(item => item.name === 'defuse')) {
                 this.playerList[this.turnCounter].alive = false;
@@ -246,6 +314,5 @@ module.exports = class Game {
             return 0;
         }
         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
-        console.log(this.turnCounter);
     }
 };

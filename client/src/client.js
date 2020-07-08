@@ -109,7 +109,7 @@ const updatePlayers = (players) => {
 const updateGameState = (game) => { // client game object
     // $("#exploded").hide();
     // $("#explodedText").html('');
-
+    
     if (game.turn === clientId) {
         $("#turn").html("It is your turn!");
         $("#endTurn").show();
@@ -131,7 +131,7 @@ const updateGameState = (game) => { // client game object
     $("#hand").empty();
     for (let card of game.hand) {
         let src = cardToImageMap.get(card.name);
-        $("#hand").prepend($('<img src="' + src + '" class=card alt=idk/>'));
+        $("#hand").prepend($('<img src="' + src + '" class=card alt="'+card.name+'"/>'));
     }
     
     $("#cardsLeft").html(game.deckLength + " cards remaining.");
@@ -253,6 +253,7 @@ $(document).ready(() => {
     });
 
     $("#endTurn").click(() => {
+        $("#future").hide();
         socket.emit('endTurn', gameId);
     });
 
@@ -273,13 +274,35 @@ $(document).ready(() => {
                 $("#invalidOrder").html("Please enter a valid number between 1 and " + cardsRemaining);
                 $("#invalidOrder").show();
             }
-            
             return;
         }
         $("#order").hide();
         $("#invalidOrder").hide();
         
         socket.emit('defused', index, gameId);
+    });
+
+    $("#play").click(() => {
+        cards = []; // just card names
+        $(".selected").each(function() {
+            cards.push($(this).attr("alt"));
+        });
+        socket.emit('cardPlayed', cards, gameId, clientId);
+    });
+
+    $("#leaveInGame").click(() => {
+        $(".createForm").hide();
+        $(".joinForm").hide();
+        $("#gameContainer").hide();
+
+        gameId = null;
+
+        socket.disconnect();
+
+        $("#intro-wrapper").show();
+        $("#lobby").hide();
+        $("#chat").hide();
+        socket.connect();
     });
 
     playerName.addEventListener("keyup", (e) => {
@@ -367,6 +390,8 @@ $(document).ready(() => {
     socket.on('gameOver', (clients, players) => {
         let winner = players.find(p => p.alive);
         $("#winner").html("Game over! " + winner.name + " won the game!");
+        $("#explodedText").html("");
+        $("#exploded").hide();
         $("#gameOver").show();
         $("#gameContainer").hide();
         $("#lobby").show();
@@ -374,12 +399,18 @@ $(document).ready(() => {
         showStartOption(clients);
     });
 
-    socket.on('makeMove', () => {
+    socket.on('showFuture', (deckCards) => {
+        // $("<li>" + player.name + " (Host, You)</li>").appendTo("#playerList");
+        $("#future").show();
 
+        for (let card of deckCards) {
+            let src = cardToImageMap.get(card.name);
+            $("#futureCards").append( $('<img src="' + src + '" height="200"/>'))
+        }
     });
 
     socket.on('invalidMove', () => {
-
+        $("#invalidCard").html("Invalid card combination played.")
     });
 });
 

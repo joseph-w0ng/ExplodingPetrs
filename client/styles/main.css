@@ -8,14 +8,22 @@ h1 {
     width: 208.99px;
 }
 
+
+#create {
+    text-align: center;
+    line-height: 40px;
+    width: 100%;
+}
+
 #join {
     text-align: center;
     line-height: 40px;
+    width: 100%;
 }
 
 #intro-wrapper {
     display: grid;
-    height: 80vh;
+    height: auto;
     width: 100%;
     justify-content: center;
     margin: 0 auto;
@@ -33,7 +41,8 @@ h1 {
     height: 90%;
     width: 100%;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
 }
 
 #gameContainer {
@@ -41,6 +50,7 @@ h1 {
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-between;
+    width: 70%;
 }
 
 #joinOption {
@@ -75,7 +85,11 @@ h1 {
 
 #instructions {
     width: 100px;
-    margin: auto;
+    margin: 0 auto;
+    position: fixed;
+    left: 50%;
+    bottom: 0px;
+    transform: translate(-50%, -50%);
 }
 
 #lobby {
@@ -102,7 +116,7 @@ h1 {
 #game {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 100%;
     height: auto;
 }
 
@@ -131,19 +145,22 @@ h1 {
     margin: 5px;
 }
 
+#leaveInGame {
+    margin: 20px auto auto auto;
+}
+
 #chat {
-    display: none;
+    display: flex;
+    flex-direction: column;
     font-family: Verdana;
     font-size: 12px;
     color: #333333;
     border: 1px double #FFFFFF;
     padding: 5px;
     margin: 10px;
-    min-width: 20%;
-    height:auto;
+    width: 30%;
     position: relative;
     border: 1px solid #E9E9E9;
-    overflow: scroll;
     float: right;
 }
 
@@ -154,26 +171,43 @@ h1 {
     position:relative;
     overflow:scroll;
     bottom:0;
-    height: 400px;
+    height: 85%;
+}
+
+#turnContainer {
+    display: flex;
+
 }
 
 #endTurn {
     height: 20px;
     width: 100px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 20px;
+}
+
+#invalidCard {
+    margin: auto;
 }
 
 #players {
-    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #play {
     display: none;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 20px;
     height: 20px;
     width: 100px;
 }
 
 #cardsLeft {
     display: inline;
+    margin: auto;
     padding: 10px;
 }
 
@@ -183,8 +217,8 @@ h1 {
 
  #otherElements {
      display: flex;
-     flex-direction: row;
-     width: 10%;
+     flex-direction: column;
+     width: 100%;
  }
 
  #util {
@@ -194,4 +228,22 @@ h1 {
  #exploded {
      display: block;
      padding: 10px;
+ }
+
+ #futureCards {
+     display: flex;
+     flex-wrap: nowrap;
+     flex-direction: row;
+ }
+
+ #chatMsg {
+     flex: 1;
+ }
+
+ #send {
+     margin: auto 5px auto auto;
+ }
+
+ #sendMsg {
+     display: flex;
  }

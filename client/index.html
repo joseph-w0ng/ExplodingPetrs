@@ -51,20 +51,26 @@
                         <img src="images/back.svg" width=150px height=200px>
                         <img id="stack" src="images/empty.svg" width=150px min-height=200px>
                         <div id="cardsLeft"></div>
+                        <div id="exploded">
+                            <p id="explodedText"></p>
+                        </div>
+                        <div id="players">
+                            <h4>Players:</h4>
+                            <ul id="playersAlive">
+                            </ul>
+                        </div>
                     </div>
-                    <p id="turn"></p>
+                    <div id="turnContainer">
+                        <p id="turn"></p>
+                        <button id="play">Play Cards</button>
+                        <button id='endTurn'>End Turn</button>
+                        <p id="invalidCard" class="error"></p>
+                    </div>
                     <div id="hand">
                     </div>
-                    <button id="play">Play Cards</button>
-                    <button id='endTurn'>End Turn</button>
+                    <button id="leaveInGame">Leave Game</button>
                 </div>
-                
                 <div id="otherElements">
-                    <div id="players">
-                        <h4>Players:</h4>
-                        <ul id="playersAlive">
-                        </ul>
-                    </div>
                     <div id="util">
                         <div id="target">
                         </div>
@@ -76,23 +82,31 @@
                         </div>
                         
                         <div id="future">
-                            <!-- For see the future implementation -->
+                            <h4>See the Future </h4>
+                            <div id="futureCards">
+                                <div width="150" height="200">
+                                    Top of deck:
+                                </div>
+                            </div>
+                            
                         </div>
                         <div id="pickFromStack">
                             <!-- For 5 cat implementation -->
                         </div>
-                        <div id="exploded">
-                            <p id="explodedText"></p>
-                        </div>
+                        
                     </div>
                 </div>
+                
             </div>
             <div id="chat">
                 <h4>Chat</h4>
                 <ul id="chatBox">
                 </ul>
-                <input type="text" id="chatMsg" placeholder="Send Message">
-                <button id="send">Send</button>
+                <div id="sendMsg">
+                    <input type="text" id="chatMsg" placeholder="Send Message">
+                    <button id="send">Send</button>
+                </div>
+                
             </div>
         </div>
         <div id="instructions">

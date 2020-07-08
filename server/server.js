@@ -40,6 +40,7 @@ const createClientGame = (clientId, game) => {
         deckLength: game.deck.length,
         stack: game.playStack,
         players: players,
+        attackTurns: game.attackTurns,
     };
 
     return returnObject;
@@ -82,26 +83,38 @@ io.on('connection', (socket) => {
             return;
         }
 
-        var room = allClients[socket.id];
+        let gameId = allClients[socket.id];
+        let room = games[gameId];
+        let game = room.game;
 
-        if (games[room].clients.length === 1) {
-            delete games[room];
+        if (games[gameId].clients.length === 1) {
+            delete games[gameId];
             return;
         }
 
-        for (var i = 0; i < games[room].clients.length; i++) {
-            if (games[room].clients[i].clientId === socket.id) {
-                if (games[room].clients[i].isAdmin) {
-                    games[room].clients[i+1].isAdmin = true;
+        for (var i = 0; i < room.clients.length; i++) {
+            if (room.clients[i].clientId === socket.id) {
+                if (room.clients[i].isAdmin) {
+                    room.clients[i+1].isAdmin = true;
                 }
-                games[room].clients.splice(i, 1);
+                room.clients.splice(i, 1);
             }
         }
         socket.leave(room);
+
+        if (room.started) {
+            let index = game.playerList.findIndex(player => player.clientId === socket.id);
+            game.playerList[index].alive = false;
+            game.playersAlive -= 1;
+            if (game.playersAlive === 1) {
+                io.in(room).emit('gameOver', room.clients, game.playerList);
+            }
+        }
         
-        io.in(room).emit('playerChanged', games[room].clients);
+        io.in(gameId).emit('playerChanged', room.clients);
         delete allClients[socket.id];   
     });
+
     // On game create, automatically add the user to the game.
     socket.on('create', (payload) => {
         const clientId = payload.clientId;
@@ -202,7 +215,34 @@ io.on('connection', (socket) => {
         io.in(gameId).emit('bombOver');
     });
 
-    // Move made
+    socket.on('cardPlayed', (cards, gameId, clientId) => { // cards are just card names
+        const room = games[gameId];
+        const game = room.game;
+        let status = game.playCards(cards);
+        switch(status) {
+            case 0:
+                break;
+            case 1:
+                io.to(clientId).emit("invalidMove");
+                break;
+            case 2:
+                break;
+            case 3: break;
+            case 4: break;
+            case 5: break;
+            case 6:
+                let deckCards = [];
+                for (var i = game.deck.length-1; i > game.deck.length-4 ;i--) {
+                    deckCards.push(game.deck[i]);
+                }
+                io.to(clientId).emit("showFuture", deckCards);
+                break;
+
+        }
+
+        sendToAll(room.clients, game);
+    });
+    // Turn end
     socket.on('endTurn', (gameId) => {
         const room = games[gameId];
         const game = room.game;
