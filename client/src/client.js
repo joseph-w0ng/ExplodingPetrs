@@ -10,7 +10,6 @@ let gameId = null;
 let name = null;
 let currentTurn = false;
 
-const playerList = document.getElementById("playerList");
 const createOption = document.getElementById("createOption");
 const joinOption = document.getElementById("joinOption")
 const createButton = document.getElementById("create");
@@ -85,7 +84,7 @@ const validOrderInput = (val) => {
     return true;
 };
 
-const updatePlayers = (players, list) => {
+const updatePlayers = (players) => {
     $("#playerList").empty();
     for (let player of players) {
         if (player.isAdmin) {
@@ -108,8 +107,8 @@ const updatePlayers = (players, list) => {
 
 // TODO: change so that client only sees what is necessary, no need to send entire game
 const updateGameState = (game) => { // client game object
-    $("#explodedText").hide();
-    $("#explodedText").html('');
+    // $("#exploded").hide();
+    // $("#explodedText").html('');
 
     if (game.turn === clientId) {
         $("#turn").html("It is your turn!");
@@ -117,6 +116,7 @@ const updateGameState = (game) => { // client game object
         $("#play").show();
         currentTurn = true;
     }
+
     else {
         $("#play").hide();
         $("#endTurn").hide();
@@ -160,6 +160,7 @@ const onFormSubmitted = (e) => {
 // Event 
 $(document).ready(() => {
     $("#lobby").hide();
+    $('#gameOver').hide();
     $(".createForm").hide();
     $(".joinForm").hide();
     $("#gameElements").hide();
@@ -298,7 +299,7 @@ $(document).ready(() => {
         $("#lobby").show();
         $("#errorMsg").html("");
         showGameId(gameId);
-        updatePlayers(clients, playerList);
+        updatePlayers(clients);
         showStartOption(clients);
     });
 
@@ -319,11 +320,12 @@ $(document).ready(() => {
     })
 
     socket.on('playerChanged', (clients) => {
-        updatePlayers(clients, playerList);
+        updatePlayers(clients);
         showStartOption(clients);
     });
 
     socket.on('gameStarted', (game) => { // game is a Game() object
+        $("#winner").html('');
         $("#lobby").hide();
         $("#startButton").hide();
         $("#gameContainer").show();
@@ -344,11 +346,28 @@ $(document).ready(() => {
     socket.on('defuse', (game) => {
         updateGameState(game);
         $("#order").show();
-        
     });
 
     socket.on('bombDrawn', (playerName) => {
+        console.log("here");
         $("#explodedText").html(playerName + " has drawn an exploding kitten!");
+        $("#exploded").show();
+        $("#explodedText").show();
+    });
+
+    socket.on('bombOver', () => {
+        $("#explodedText").html('');
+        $("#expoded").hide();
+    });
+
+    socket.on('gameOver', (clients, players) => {
+        let winner = players.find(p => p.alive);
+        $("#winner").html("Game over! " + winner.name + " won the game!");
+        $("#gameOver").show();
+        $("#gameContainer").hide();
+        $("#lobby").show();
+        updatePlayers(clients);
+        showStartOption(clients);
     });
 
     socket.on('makeMove', () => {

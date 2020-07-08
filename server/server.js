@@ -179,7 +179,7 @@ io.on('connection', (socket) => {
     // Chat message
     socket.on('message', (payload) => {
         const chatMsg = payload.name + ": " + payload.message;
-        io.to(payload.gameId).emit('newChat', chatMsg);
+        io.in(payload.gameId).emit('newChat', chatMsg);
     });
     // Game ready to start
     socket.on('ready', (gameId) => {
@@ -199,6 +199,7 @@ io.on('connection', (socket) => {
         const game = room.game;
         game.playDefuse(index);
         sendToAll(room.clients, game);
+        io.in(gameId).emit('bombOver');
     });
 
     // Move made
@@ -216,7 +217,13 @@ io.on('connection', (socket) => {
         }
 
         if (status === 1 || status === 2) {
+            console.log("message");
             io.to(gameId).emit('bombDrawn', client.name);
+
+            if (status === 2 && game.playersAlive === 1) {
+                // Game over
+                io.to(gameId).emit('gameOver', room.clients, game.playerList);
+            }
         }
         sendToAll(room.clients, game);
     });

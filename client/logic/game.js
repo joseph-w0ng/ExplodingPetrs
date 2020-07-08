@@ -31,7 +31,7 @@ module.exports = class Game {
             }
         }
         this._addBombs(players.length-1);
-        this._debugDeck(players.length-1);
+        // this._debugDeck(players.length-1);
     }
 
     toString() {
@@ -211,7 +211,6 @@ module.exports = class Game {
             return 0;
         }
         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
-        console.log(this.turnCounter);
     }
 
     endTurn() {
@@ -225,7 +224,6 @@ module.exports = class Game {
         }
 
         let card = this.draw();
-        console.log(card.name);
         if (card.type === "bomb") {
             if (!player.hand.some(item => item.name === 'defuse')) {
                 this.playerList[this.turnCounter].alive = false;
