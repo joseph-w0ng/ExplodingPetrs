@@ -73,9 +73,6 @@ const sendToAll = (clientList, game) => {
 
 
 io.on('connection', (socket) => {
-    socket.on('message', (text) => {
-        io.emit('message', text);
-    });
 
     // On game disconnect:
     socket.on('disconnect', () => {
@@ -87,9 +84,29 @@ io.on('connection', (socket) => {
         let room = games[gameId];
         let game = room.game;
 
-        if (games[gameId].clients.length === 1) {
+        if (room.clients.length === 1) {
             delete games[gameId];
             return;
+        }
+
+
+        let playerName = null;
+        if (room.started) {
+            let index = game.playerList.findIndex(player => player.clientId === socket.id);
+            game.playerList[index].alive = false;
+            playerName = game.playerList[index].name;
+            game.playersAlive -= 1;
+            if (game.playersAlive === 1) {
+                io.in(gameId).emit('gameOver', room.clients, game.playerList);
+            }
+            else {
+                sendToAll(room.clients, game);
+            }
+        }
+
+        else {
+            let i = room.clients.findIndex(player => player.clientId === socket.id);
+            playerName = room.clients[i].name;
         }
 
         for (var i = 0; i < room.clients.length; i++) {
@@ -102,21 +119,9 @@ io.on('connection', (socket) => {
         }
 
         socket.leave(room);
-        
-        if (room.started) {
-            let index = game.playerList.findIndex(player => player.clientId === socket.id);
-            game.playerList[index].alive = false;
-            game.playersAlive -= 1;
-            if (game.playersAlive === 1) {
-                io.in(gameId).emit('gameOver', room.clients, game.playerList);
-            }
-            else {
-                sendToAll(room.clients, game);
-            }
-        }
 
-        
-        
+        let message = playerName + " has left the game."
+        io.in(gameId).emit('newChat', message);
         io.in(gameId).emit('playerChanged', room.clients);
         delete allClients[socket.id];   
     });
@@ -190,6 +195,8 @@ io.on('connection', (socket) => {
 
         allClients[clientId] = gameId;
 
+        let message = name + " has joined the game."
+        io.in(gameId).emit('newChat', message);
         io.in(gameId).emit("playerChanged", room.clients);
         socket.join(gameId);
         io.to(clientId).emit("gameJoined", room.clients);
