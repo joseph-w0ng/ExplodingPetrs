@@ -100,16 +100,22 @@ io.on('connection', (socket) => {
                 room.clients.splice(i, 1);
             }
         }
-        socket.leave(room);
 
+        socket.leave(room);
+        
         if (room.started) {
             let index = game.playerList.findIndex(player => player.clientId === socket.id);
             game.playerList[index].alive = false;
             game.playersAlive -= 1;
             if (game.playersAlive === 1) {
-                io.in(room).emit('gameOver', room.clients, game.playerList);
+                io.in(gameId).emit('gameOver', room.clients, game.playerList);
+            }
+            else {
+                sendToAll(room.clients, game);
             }
         }
+
+        
         
         io.in(gameId).emit('playerChanged', room.clients);
         delete allClients[socket.id];   
