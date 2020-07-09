@@ -30,7 +30,8 @@ const createClientGame = (clientId, game) => {
     for (let player of game.playerList) {
         players.push({
             name: player.name,
-            alive: player.alive
+            alive: player.alive,
+            cards: player.hand.length
         })
     }
     let returnObject = {
@@ -228,6 +229,29 @@ io.on('connection', (socket) => {
         io.in(gameId).emit('bombOver');
     });
 
+    // origin is a player
+    socket.on('targetSelected', (id, gameId) => {
+        const room = games[gameId];
+        const game = room.game;
+        io.to(id).emit('targeted', createClientGame(id, game), origin);
+        io.in(gameId).emit('targetActionPlayed',id, room.clients);
+    });
+
+    // pass action back and forth
+    socket.on('nope', (clientId) => {
+
+    });
+
+    socket.on('actionAccepted', (clientId, action) => {
+        if (action === 'favor') {
+            io.to(clientId).emit('favor');
+        }
+        else {
+            io.to(clientId).emit('steal');
+            // Steal
+        }
+    });
+
     socket.on('cardPlayed', (cards, gameId, clientId) => { // cards are just card names
         const room = games[gameId];
         const game = room.game;
@@ -238,17 +262,26 @@ io.on('connection', (socket) => {
             case 1:
                 io.to(clientId).emit("invalidMove");
                 break;
-            case 2:
-                break;
+            case 2: 
+                let clientPlayers = [];
+                for (let player in game.playerList) {
+                    clientPlayers.push({
+                        name: player.name,
+                        id: player.clientId
+                    })
+                }
+                io.to(clientId).emit("selectTarget", clientPlayers);
             case 3: break;
             case 4: break;
-            case 5: break;
-            case 6:
+            case 5: 
                 let deckCards = [];
                 for (var i = game.deck.length-1; i > game.deck.length-4 ;i--) {
                     deckCards.push(game.deck[i]);
                 }
                 io.to(clientId).emit("showFuture", deckCards);
+                break;
+            case 6:
+                sendToAll(room.clients, game);
                 break;
 
         }

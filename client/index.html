@@ -51,8 +51,8 @@
                         <img src="images/back.svg" width=150px height=200px>
                         <img id="stack" src="images/empty.svg" width=150px min-height=200px>
                         <div id="cardsLeft"></div>
-                        <div id="exploded">
-                            <p id="explodedText"></p>
+                        <div id="info">
+                            <p id="infoText"></p>
                         </div>
                         <div id="players">
                             <h4>Players:</h4>
@@ -73,14 +73,15 @@
                 <div id="otherElements">
                     <div id="util">
                         <div id="target">
+                            <h4>Select a target player:</h4>
+                            <select id="targetSelect"></select>
+                            <button id="submitTarget">Submit!</button>
                         </div>
                         <div id="order">
-                            <label for="orderVal">You drew an exploding kitten! Place the kitten back in the deck (1 = top of the deck):</label>
-                            <input type="text" id="orderVal" placeholder="1">
+                            <label for="orderSelect">You drew an exploding kitten! Place the kitten back in the deck:</label>
+                            <select id="orderSelect"></select>
                             <button id="submitIndex">Submit!</button>
-                            <p class="error" id="invalidOrder"></p>
                         </div>
-                        
                         <div id="future">
                             <h4>See the Future </h4>
                             <div id="futureCards">
@@ -93,7 +94,14 @@
                         <div id="pickFromStack">
                             <!-- For 5 cat implementation -->
                         </div>
-                        
+                        <div id="sayNo">
+                            <h4>You have been targeted! Use a nope?</h4>
+                            <select id="nopeSelect">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                            <button id="nopeSubmit">Submit!</button>
+                        </div>
                     </div>
                 </div>
                 

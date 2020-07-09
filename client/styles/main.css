@@ -102,7 +102,7 @@ h1 {
 
 .error {
     color: red;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #start {
@@ -176,7 +176,7 @@ h1 {
 
 #turnContainer {
     display: flex;
-
+    padding: 10px;
 }
 
 #endTurn {
@@ -211,13 +211,15 @@ h1 {
     padding: 10px;
 }
 
-.selected{
+.selected {
     border: 2px solid blue;
+    box-shadow:0px 12px 22px 1px #333
  }
 
  #otherElements {
      display: flex;
      flex-direction: column;
+     padding: 10px;
      width: 100%;
  }
 
@@ -225,7 +227,7 @@ h1 {
      border: none;
  }
 
- #exploded {
+ #info {
      display: block;
      padding: 10px;
  }

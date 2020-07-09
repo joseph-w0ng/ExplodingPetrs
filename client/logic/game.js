@@ -3,6 +3,7 @@ const { isEmptyObject } = require("jquery");
 module.exports = class Game {
     // players = clients
     constructor(players) {
+        this.drawFromBottom = false;
         this.turnCounter = 0;
         this.playerList = []; // array of objects
         this.deck = [];
@@ -10,7 +11,6 @@ module.exports = class Game {
         this._initializeDeck(players.length); 
         this.attackTurns = 0;
         this.shuffle();
-        this.drawFromBottom = false;
         this.playersAlive = players.length;
         // initialize playerList and deal everyone a hand
         for (var i = 0; i < players.length; i++) {
@@ -181,6 +181,10 @@ module.exports = class Game {
         return false;
     }
    
+    playNope() {
+
+    }
+
     playCards(cards) { 
         // Return codes:
         // 0: everything is fine
@@ -188,8 +192,8 @@ module.exports = class Game {
         // 2: target needed
         // 3: target + card needed
         // 4: card needed
-        // 5: if turn changed
-        // 6: something needs to be displayed
+        // 5: something needs to be displayed
+        // 6: turn changed
         // Action card logic
         let player = this.playerList[this.turnCounter];
         let playedCards = [];
@@ -215,24 +219,20 @@ module.exports = class Game {
                 case "attack":
                     this.attackTurns += 2;
                     this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
-                    return 5;
+                    return 6;
                 case "favor":
                     return 2;
                 case "skip":
-                    if (this.attackTurns === 0) {
+                    this.attackTurns -= 1; 
+                    if (this.attackTurns <= 1) {
                         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
-                        return 5;
                     }
-                    else {
-                        this.attackTurns -= 1;
-                    }
+                    return 6;
                 case "shuffle":
                     this.shuffle();
                     return 0;
                 case "see future":
-                    return 6;
-                // case "nope":
-                //     return true; // Not always
+                    return 5;
                 case "draw bottom":
                     this.drawFromBottom = true;
                     return 0;
@@ -286,12 +286,13 @@ module.exports = class Game {
 
         let card = null;
         if (this.drawFromBottom) {
-            card = this.drawBottom();
             this.drawFromBottom = false;
+            card = this.drawBottom();
         }
         else {
-            card = this.draw();
+            card =this.draw();
         }
+        
 
         if (card.type === "bomb") {
             if (!player.hand.some(item => item.name === 'defuse')) {
@@ -314,5 +315,6 @@ module.exports = class Game {
             return 0;
         }
         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
+        return 0;
     }
 };
