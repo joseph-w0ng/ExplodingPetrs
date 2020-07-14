@@ -1,6 +1,6 @@
 const http = require('http');
 const express = require('express');
-const socketio = require('socket.io');
+
 const Game = require('./../client/logic/game.js');
 
 const app = express();
@@ -11,8 +11,9 @@ console.log(`Serving static from ${clientPath}`);
 app.use(express.static(clientPath));
 
 const server = http.createServer(app);
-
-const io = socketio(server);
+const io = require('socket.io')(server, {
+    pingTimeout: 60000,
+});
 
 // Keep track of which game each client is in.
 const allClients = {};
@@ -29,6 +30,7 @@ const createClientGame = (clientId, game) => {
     let players = [];
     for (let player of game.playerList) {
         players.push({
+            clientId: player.clientId,
             name: player.name,
             alive: player.alive,
             cards: player.hand.length
@@ -230,33 +232,45 @@ io.on('connection', (socket) => {
     });
 
     // origin is a player
-    socket.on('targetSelected', (id, gameId) => {
+    socket.on('targetSelected', (origin, id, gameId, card=null) => {
+        // card = null -> two cats or favor
+        // card != null -> 3 cats
+
         const room = games[gameId];
         const game = room.game;
-        io.to(id).emit('targeted', createClientGame(id, game), origin);
-        io.in(gameId).emit('targetActionPlayed',id, room.clients);
-    });
 
-    // pass action back and forth
-    socket.on('nope', (clientId) => {
-
-    });
-
-    socket.on('actionAccepted', (clientId, action) => {
-        if (action === 'favor') {
-            io.to(clientId).emit('favor');
+        let init = game.playerList.find(p => p.clientId === origin);
+        let player = game.playerList.find(p => p.clientId === id);
+        if (game.playStack[game.playStack.length - 1].type === "action") {
+            io.to(id).emit('favor', player);
+            io.in(gameId).emit('favorAsked', init.name, player.name);
         }
+
         else {
-            io.to(clientId).emit('steal');
-            // Steal
+            game.steal(origin, id, card);
+            io.in(gameId).emit('cardStolen', init.name, player.name);
+            sendToAll(room.clients, game);
+            io.to(origin).emit('cardReceived');
         }
+        
     });
 
-    socket.on('cardPlayed', (cards, gameId, clientId) => { // cards are just card names
+    socket.on('giveCard', (gameId, card, origin, destination) => {
         const room = games[gameId];
         const game = room.game;
-        let status = game.playCards(cards);
-        switch(status) {
+
+        game._transferCard(card, origin, destination);
+        io.to(destination).emit('cardReceived');
+        sendToAll(room.clients, game);
+
+    });
+
+    socket.on('cardPlayed', (cardsToPlay, gameId, clientId) => { // cards are just card names
+        const room = games[gameId];
+        const game = room.game;
+        let status = game.playCards(cardsToPlay);
+
+        switch(status) {    
             case 0:
                 break;
             case 1:
@@ -264,11 +278,13 @@ io.on('connection', (socket) => {
                 break;
             case 2: 
                 let clientPlayers = [];
-                for (let player in game.playerList) {
-                    clientPlayers.push({
-                        name: player.name,
-                        id: player.clientId
-                    })
+                for (let player of game.playerList) {
+                    if (player.alive) {
+                        clientPlayers.push({
+                            name: player.name,
+                            id: player.clientId
+                        })
+                    }
                 }
                 io.to(clientId).emit("selectTarget", clientPlayers);
             case 3: break;

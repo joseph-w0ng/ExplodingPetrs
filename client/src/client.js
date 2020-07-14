@@ -11,6 +11,10 @@ let name = null;
 let currentTurn = false;
 let tempAction = null;
 let tempOrig = null;
+let lastPlayedCards = null;
+let alive = true;
+let favorRecipient = null;
+
 
 const createOption = document.getElementById("createOption");
 const joinOption = document.getElementById("joinOption")
@@ -99,9 +103,7 @@ const updatePlayers = (players) => {
 
 // TODO: change so that client only sees what is necessary, no need to send entire game
 const updateGameState = (game) => { // client game object
-    // $("#info").hide();
-    // $("#infoText").html('');
-    
+
     if (game.turn === clientId) {
         $("#turn").html("It is your turn!");
         $("#endTurn").show();
@@ -131,10 +133,23 @@ const updateGameState = (game) => { // client game object
 
     for (let player of game.players) {
         if (player.alive) {
-            $("#playersAlive").append('<li>' + player.name + '(' + player.cards + ' cards)</li>');
+            if (player.clientId === clientId) {
+                $("#playersAlive").append('<li>' + player.name + ' (You)</li>');
+            }
+            else {
+                $("#playersAlive").append('<li>' + player.name + ' (' + player.cards + ' cards)</li>');
+            }
+
+            $("#hand").show();
+            $("#turn").show();
+            
         }
         else {
             $("#playersAlive").append('<li><del>' + player.name + '</del></li>');
+        }
+        if (player.clientId === clientId && !player.alive) {
+            $("#hand").hide();
+            $("#turn").hide();
         }
         
     }
@@ -157,13 +172,14 @@ $(document).ready(() => {
     $(".joinForm").hide();
     $("#gameElements").hide();
     $("#gameContainer").hide();
-    $("target").hide();
+    $("#target").hide();
     $("#order").hide();
     $("#future").hide();
     $("#pickFromStack").hide();
     $("#info").hide();
-    $("#target").hide();
     $("#sayNo").hide();
+    $("#favor").hide();
+    $("#waiting").hide();
 
     createOption.addEventListener("click", e => {
         $(".joinForm").hide();
@@ -252,10 +268,6 @@ $(document).ready(() => {
     });
 
     $("#hand").on('click', 'img', function() {
-        if (!currentTurn) {
-            return;
-        }
-
         $(this).toggleClass("selected");
     });
 
@@ -273,6 +285,7 @@ $(document).ready(() => {
         $(".selected").each(function() {
             cards.push($(this).attr("alt"));
         });
+
         socket.emit('cardPlayed', cards, gameId, clientId);
     });
 
@@ -304,21 +317,26 @@ $(document).ready(() => {
 
     $("#submitTarget").click(() => {
         let id = $("#targetSelect").val();
-        $("#target").hide();
-        
+        $("#targetText").hide();
+        $("#targetSelect").hide();
+        $("#submitTarget").hide();
+        $("#waiting").show();
         socket.emit('targetSelected', clientId, id, gameId);
     });
 
-    $("#nopeSubmit").click(() => {
-        if ($("#nopeSelect").val() === "Yes") {
-            socket.emit('nope', clientId);
+    $("#give").click(() => {
+        let card = [];
+        $(".selected").each(function() {
+            card.push($(this).attr("alt"));
+        });
+        if (card.length != 1) {
+            $("#invalidSelect").html("Choose one card ONLY.");
+            return;
         }
-        else {
-            socket.emit('actionAccepted', clientId, tempAction);
-        }
-        tempAction = null;
-    });
+        socket.emit("giveCard", gameId, card[0], clientId, favorRecipient);
+        $("#favor").hide();
 
+    });
     // Server events
     socket.on('gameCreated', (id) => {
         gameId = id;
@@ -360,6 +378,7 @@ $(document).ready(() => {
         $("#lobby").hide();
         $("#startButton").hide();
         $("#gameContainer").show();
+        alive = true;
         document.getElementById("stack").src = "images/empty.svg";
         updateGameState(game);
     });
@@ -376,7 +395,7 @@ $(document).ready(() => {
     });
 
     socket.on('defuse', (game) => {
-        $("#turnContainer").hide();
+        // $("#turnContainer").hide();
         updateGameState(game);
         $("#order").show();
         $("#orderSelect").empty();
@@ -404,7 +423,6 @@ $(document).ready(() => {
     });
 
     socket.on('bombDrawn', (playerName) => {
-        console.log("here");
         $("#infoText").html(playerName + " has drawn an exploding kitten!");
         $("#info").show();
         $("#infoText").show();
@@ -433,54 +451,49 @@ $(document).ready(() => {
 
         for (let card of deckCards) {
             let src = cardToImageMap.get(card.name);
-            $("#futureCards").append( $('<img src="' + src + '" height="200"/>'))
+            $("#futureCards").append($('<img src="' + src + '" height="200" class="cardFuture"/>'))
         }
     });
 
-    socket.on('targeted', (game, action, player) => {
-        tempAction = action;
-        if (game.hand.findIndex(card => card.name === "nope") != -1) {
-            $("#sayNo").show();
-            tempOrig = player;
-        }
-        else {
-            socket.emit('actionAccepted', (clientId, action));
-        }
+    socket.on('favor', (player) => {
+        $("#favorInfo").html(player.name + " has asked you for a favor!");
+        favorRecipient = player.clientId;
+        $("#favor").show();
     });
 
-    socket.on('targetActionPlayed', (victim, clients) => {
-        let victimName = clients.find(p => p.id === victim).name;
-
-        $("#infoText").html("Target: " + victimName);
-    })
-
-    // The only time this will get called is if a card is stolen from a player
-    socket.on('favor', () => {
-        
-    });
-
-    socket.on('steal', () => {
-        
+    socket.on('favorAsked', (stealer, victim) => {
+        $("#info").show();
+        $("#infoText").html(stealer.name + " has asked " + victim.name + "for a favor!");
     });
 
     socket.on('cardStolen', (stealer, victim) => {
-        $("info").show();
-        $("infoText").html(stealer + " has taken a card from " + victim + "!");
+        $("#info").show();
+        $("#infoText").html(stealer + " has taken a card from " + victim.name + "!");
     });
 
     socket.on('selectTarget', (players) => {
-        $("#target").empty();
-        $("#target").show();
+        $("#targetSelect").empty();
         for (let player of players) {
-            $("#targetSelect").append('<option', {
-                value: player.id,
-                text: player.name
-            })
+            if (player.id != clientId) {
+                $("#targetSelect").append($('<option>', {
+                    value: player.id,
+                    text: player.name
+                }))
+            }
         }
+        $("#target").show();
     });
 
     socket.on('invalidMove', () => {
         $("#invalidCard").html("Invalid card combination played.")
+    });
+
+    socket.on('cardReceived', () => {
+        $("#targetText").show();
+        $("#targetSelect").show();
+        $("#submitTarget").show();
+        $("#waiting").hide();
+        $("#target").hide();
     });
 });
 

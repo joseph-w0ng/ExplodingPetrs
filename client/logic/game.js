@@ -31,7 +31,7 @@ module.exports = class Game {
             }
         }
         this._addBombs(players.length-1);
-        // this._debugDeck(players.length-1);
+        this._debugDeck(players.length-1);
     }
 
     toString() {
@@ -56,8 +56,8 @@ module.exports = class Game {
         this.deck = [];
         for (var i = 0; i < 6; i++) {
             this.deck.push({
-                name: "see future",
-                type: "action"
+                name: "cat1",
+                type: "cat"
             });
         }
     }
@@ -84,11 +84,12 @@ module.exports = class Game {
                 name: "see future",
                 type: "action"
             });
-
-            this.deck.push({
-                name: "nope",
-                type: "action"
-            });
+            
+            // Not viable to implement
+            // this.deck.push({
+            //     name: "nope",
+            //     type: "action"
+            // });
 
             this.deck.push({
                 name: "draw bottom",
@@ -108,25 +109,25 @@ module.exports = class Game {
 
             // image needed
             this.deck.push({
-                name: "cat2",
+                name: "cat1",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat3",
+                name: "cat1",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat4",
+                name: "cat1",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat5",
+                name: "cat1",
                 type: "cat"
             });
         }
@@ -180,9 +181,40 @@ module.exports = class Game {
         }
         return false;
     }
-   
-    playNope() {
 
+    _transferCard(card, origin, destination) {
+        let origOwner = this.playerList.find(p => p.clientId === origin);
+        let newOwner = this.playerList.find(p => p.clientId === destination);
+         
+        let cardIndex = origOwner.hand.findIndex(c => c.name === card);
+        let cardToMove = origOwner.hand[cardIndex];
+
+        origOwner.hand.splice(cardIndex, 1);
+        newOwner.hand.push(cardToMove);
+    }
+
+    steal(origin, destination, card) {
+        // origin = player who used the cats
+        // destination = player who was targeted
+        let origOwner = this.playerList.find(p => p.clientId === destination);
+        let newOwner = this.playerList.find(p => p.clientId === origin);
+
+        let index = null;
+        if (card != null) {
+            index = origOwner.hand.findIndex(c => c.name === card);
+            if (index === -1) {
+                return;
+            }
+        }
+
+        else {
+            index = Math.floor(Math.random() * origOwner.hand.length);
+        }
+        
+        let cardToMove = origOwner.hand[index];
+
+        origOwner.hand.splice(index, 1);
+        newOwner.hand.push(cardToMove);
     }
 
     playCards(cards) { 
@@ -198,10 +230,13 @@ module.exports = class Game {
         let player = this.playerList[this.turnCounter];
         let playedCards = [];
         let indices = [];
+        let lastIndex = -1;
+        let subtract = 0;
 
         for (let card of cards) {
-            let index = player.hand.findIndex(c => c.name === card);
+            let index = player.hand.findIndex((c, i) => c.name === card && i > lastIndex);
             playedCards.push(player.hand[index]);
+            lastIndex = index;
             indices.push(index);
         }
 
@@ -210,9 +245,11 @@ module.exports = class Game {
         }
 
         for (let index of indices) {
-            this.playStack.push(player.hand[index]);
-            player.hand.splice(index, 1);
+            this.playStack.push(player.hand[index - subtract]);
+            player.hand.splice(index-subtract, 1);
+            subtract += 1;
         }
+
 
         if (playedCards.length === 1) {
             switch(playedCards[0].name) {
@@ -220,6 +257,7 @@ module.exports = class Game {
                     this.attackTurns += 2;
                     this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
                     return 6;
+                // TODO
                 case "favor":
                     return 2;
                 case "skip":
@@ -239,6 +277,7 @@ module.exports = class Game {
             }
         }
 
+        // TODO
         else if (playedCards.length === 2) {
             return 2;
         }

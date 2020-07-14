@@ -177,6 +177,19 @@ h1 {
 #turnContainer {
     display: flex;
     padding: 10px;
+    height: 300px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom:  10px;
+}
+
+#turn {
+    margin-left: 10px;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    min-width: 100px;
 }
 
 #endTurn {
@@ -185,6 +198,7 @@ h1 {
     margin-top: auto;
     margin-bottom: auto;
     margin-right: 20px;
+    min-width: 100px;
 }
 
 #invalidCard {
@@ -196,13 +210,22 @@ h1 {
     margin-right: auto;
 }
 
-#play {
+#nope {
     display: none;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 20px;
     height: 20px;
     width: 100px;
+}
+
+#play {
+    display: none;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 20px;
+    height: 20px;
+    min-width: 100px;
 }
 
 #cardsLeft {
@@ -248,4 +271,9 @@ h1 {
 
  #sendMsg {
      display: flex;
+ }
+
+ .cardFuture {
+     border: 1px solid black;
+     border-radius: 10px;
  }
