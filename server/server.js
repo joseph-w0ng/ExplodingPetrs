@@ -287,7 +287,19 @@ io.on('connection', (socket) => {
                     }
                 }
                 io.to(clientId).emit("selectTarget", clientPlayers);
-            case 3: break;
+                break;
+            case 3: 
+                let clients = [];
+                    for (let player of game.playerList) {
+                        if (player.alive) {
+                            clients.push({
+                                name: player.name,
+                                id: player.clientId
+                            })
+                        }
+                    }
+                    io.to(clientId).emit("selectTarget", clients, true);
+                break;
             case 4: break;
             case 5: 
                 let deckCards = [];

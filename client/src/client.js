@@ -316,12 +316,19 @@ $(document).ready(() => {
     })
 
     $("#submitTarget").click(() => {
-        let id = $("#targetSelect").val();
+        let id = $("#normalTargetSelect").val();
         $("#targetText").hide();
         $("#targetSelect").hide();
         $("#submitTarget").hide();
         $("#waiting").show();
-        socket.emit('targetSelected', clientId, id, gameId);
+        if ($("#cardChooser").is(":visible")) {
+            let card = $("#cardChooser").val();
+            socket.emit('targetSelected', clientId, id, gameId, card);
+        }
+        else {
+            socket.emit('targetSelected', clientId, id, gameId);
+        }
+       
     });
 
     $("#give").click(() => {
@@ -337,6 +344,8 @@ $(document).ready(() => {
         $("#favor").hide();
 
     });
+
+
     // Server events
     socket.on('gameCreated', (id) => {
         gameId = id;
@@ -463,23 +472,31 @@ $(document).ready(() => {
 
     socket.on('favorAsked', (stealer, victim) => {
         $("#info").show();
-        $("#infoText").html(stealer.name + " has asked " + victim.name + "for a favor!");
+        $("#infoText").html(stealer + " has asked " + victim + "for a favor!");
     });
 
     socket.on('cardStolen', (stealer, victim) => {
         $("#info").show();
-        $("#infoText").html(stealer + " has taken a card from " + victim.name + "!");
+        $("#infoText").html(stealer + " has taken a card from " + victim + "!");
     });
 
-    socket.on('selectTarget', (players) => {
-        $("#targetSelect").empty();
+    socket.on('selectTarget', (players, threeCats=false) => {
+        $(".targetSelect").empty();
         for (let player of players) {
             if (player.id != clientId) {
-                $("#targetSelect").append($('<option>', {
+                $(".targetSelect").append($('<option>', {
                     value: player.id,
                     text: player.name
                 }))
             }
+        }
+        if (threeCats) {
+            $("#cardChooser").show();
+            $("#cardLabel").show();
+        }
+        else {
+            $("#cardChooser").hide();
+            $("#cardLabel").hide();
         }
         $("#target").show();
     });

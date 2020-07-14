@@ -68,7 +68,16 @@
                         <div id="otherElements">
                             <div id="target">
                                 <h4 id="targetText">Select a target player:</h4>
-                                <select id="targetSelect"></select>
+                                <select class="targetSelect" id="normalTargetSelect"></select>
+                                <label id="cardLabel" for="cardChooser">Choose a card to steal:</label>
+                                <select id="cardChooser">
+                                    <option value="defuse">Defuse</option>
+                                    <option value="attack">Attack</option>
+                                    <option value="skip">Skip</option>
+                                    <option value="favor">Favor</option>
+                                    <option value="shuffle">Shuffle</option>
+                                    <option value="draw bottom">Draw from the Bottom</option>
+                                </select>
                                 <button id="submitTarget">Submit!</button>
                                 <p id="waiting">Waiting for player response...</p>
                             </div>
