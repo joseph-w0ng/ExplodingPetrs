@@ -249,7 +249,7 @@ io.on('connection', (socket) => {
         let init = game.playerList.find(p => p.clientId === origin);
         let player = game.playerList.find(p => p.clientId === id);
         if (game.playStack[game.playStack.length - 1].type === "action") {
-            io.to(id).emit('favor', player);
+            io.to(id).emit('favor', init);
             io.in(gameId).emit('favorAsked', init.name, player.name);
         }
 
@@ -268,6 +268,7 @@ io.on('connection', (socket) => {
 
         game._transferCard(card, origin, destination);
         io.to(destination).emit('cardReceived');
+        io.to(origin).emit('cardReceived');
         sendToAll(room.clients, game);
 
     });
@@ -307,7 +308,9 @@ io.on('connection', (socket) => {
                     }
                     io.to(clientId).emit("selectTarget", clients, true);
                 break;
-            case 4: break;
+            case 4: 
+                io.to(clientId).emit("fiveCats", game.playStack.slice(0, game.playStack.length - 5));
+                break;
             case 5: 
                 let deckCards = [];
                 for (var i = game.deck.length-1; i > game.deck.length-4 ;i--) {

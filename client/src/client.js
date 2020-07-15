@@ -41,10 +41,10 @@ const cardToImageMap = new Map([
     ["shuffle", "images/shuffle.svg"],
     ["draw bottom", "images/drawbottom.svg"],
     ["cat1", "images/cat1.svg"],
-    ["cat2", "images/cat1.svg"],
-    ["cat3", "images/cat1.svg"],
-    ["cat4", "images/cat1.svg"],
-    ["cat5", "images/cat1.svg"],
+    ["cat2", "images/cat2.svg"],
+    ["cat3", "images/cat3.svg"],
+    ["cat4", "images/cat4.svg"],
+    ["cat5", "images/cat5.svg"],
 ]);
 
 
@@ -180,6 +180,7 @@ $(document).ready(() => {
     $("#sayNo").hide();
     $("#favor").hide();
     $("#waiting").hide();
+    $("#fiveCats").hide();
 
     createOption.addEventListener("click", e => {
         $(".joinForm").hide();
@@ -264,6 +265,7 @@ $(document).ready(() => {
     $("#endTurn").click(() => {
         $("#future").hide();
         $("#infoText").html('');
+        $("#invalidCard").html('');
         socket.emit('endTurn', gameId);
     });
 
@@ -507,6 +509,7 @@ $(document).ready(() => {
     });
 
     socket.on("fiveCats", (stack) => {
+        console.log(stack);
         stack = new Set(stack);
         for (let card of stack) {
             $("#stackChooser").append($('<option>', {
@@ -522,6 +525,7 @@ $(document).ready(() => {
     });
 
     socket.on('cardReceived', () => {
+        console.log("card received");
         $("#targetText").show();
         $("#targetSelect").show();
         $("#submitTarget").show();

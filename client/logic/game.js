@@ -42,10 +42,10 @@ module.exports = class Game {
         let player = this.playerList[this.turnCounter];
         let index = this.playStack.findIndex(c => c.name === card);
 
-        let card = this.playStack[index];
+        let cardToTake = this.playStack[index];
         this.playStack.splice(index, 1);
 
-        player.hand.push(card);
+        player.hand.push(cardToTake);
     }
 
     _hasDuplicates(array) {
@@ -62,11 +62,26 @@ module.exports = class Game {
         }
     }
 
-    _debugDeck(numPlayers) {
-        this.deck = [];
-        for (var i = 0; i < 6; i++) {
-            this.deck.push({
+    _debugDeck() {
+        for (let i in this.playerList) {
+            this.playerList[i].hand.push({
                 name: "cat1",
+                type: "cat"
+            });
+            this.playerList[i].hand.push({
+                name: "cat2",
+                type: "cat"
+            });
+            this.playerList[i].hand.push({
+                name: "cat3",
+                type: "cat"
+            });
+            this.playerList[i].hand.push({
+                name: "cat4",
+                type: "cat"
+            });
+            this.playerList[i].hand.push({
+                name: "cat5",
                 type: "cat"
             });
         }
@@ -79,7 +94,9 @@ module.exports = class Game {
                 name: "attack",
                 type: "action"
             });
+        }
 
+        for (var i = 0; i < 2*numPlayers - 1; i++) {
             this.deck.push({
                 name: "skip",
                 type: "action"
@@ -141,7 +158,6 @@ module.exports = class Game {
                 type: "cat"
             });
         }
-
         // Add an extra defuse to the deck
         this.deck.push({
             name: "defuse",
@@ -184,7 +200,7 @@ module.exports = class Game {
         }
 
         else if (cards.length === 5) {
-            if (!this._hasDuplicates(cards)) {
+            if (!this._hasDuplicates(cards) && this.playStack.length >= 1) {
                 return true;
             }
             return false;
@@ -240,16 +256,23 @@ module.exports = class Game {
         let player = this.playerList[this.turnCounter];
         let playedCards = [];
         let indices = [];
-        let lastIndex = -1;
         let subtract = 0;
+        let seen = {};
 
         for (let card of cards) {
-            let index = player.hand.findIndex((c, i) => c.name === card && i > lastIndex);
+            let index = -1;
+            if (!(card in seen)) {
+                index = player.hand.findIndex(c => c.name === card);
+                seen[card] = index;
+            }
+            else {
+                index = player.hand.findIndex((c, i) => c.name === card && i > seen[card]);
+                seen[card] = index;
+            }
             playedCards.push(player.hand[index]);
-            lastIndex = index;
             indices.push(index);
         }
-
+        console.log(playedCards);
         if (!this.isValidCombination(playedCards)) {
             return 1;
         }
