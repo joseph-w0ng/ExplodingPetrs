@@ -40,8 +40,10 @@ module.exports = class Game {
 
     takeFromStack(card) {
         let player = this.playerList[this.turnCounter];
+        console.log(this.playStack);
         let index = this.playStack.findIndex(c => c.name === card);
-
+        console.log(index, card);
+ 
         let cardToTake = this.playStack[index];
         this.playStack.splice(index, 1);
 
@@ -272,10 +274,12 @@ module.exports = class Game {
             playedCards.push(player.hand[index]);
             indices.push(index);
         }
-        console.log(playedCards);
+
         if (!this.isValidCombination(playedCards)) {
             return 1;
         }
+
+        indices.sort();
 
         for (let index of indices) {
             this.playStack.push(player.hand[index - subtract]);

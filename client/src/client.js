@@ -350,7 +350,8 @@ $(document).ready(() => {
     $("#stackSubmit").click(() => {
         $("#fiveCats").hide();
         let card = $("#stackChooser").val();
-        socket.emit('fiveCats', gameId, clientId, card);
+        console.log(card);  
+        socket.emit('fiveCats', gameId, card);
     });
 
     // Server events
@@ -509,7 +510,6 @@ $(document).ready(() => {
     });
 
     socket.on("fiveCats", (stack) => {
-        console.log(stack);
         stack = new Set(stack);
         for (let card of stack) {
             $("#stackChooser").append($('<option>', {
