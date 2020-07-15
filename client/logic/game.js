@@ -38,6 +38,16 @@ module.exports = class Game {
         return String(this.turnCounter);
     }
 
+    takeFromStack(card) {
+        let player = this.playerList[this.turnCounter];
+        let index = this.playStack.findIndex(c => c.name === card);
+
+        let card = this.playStack[index];
+        this.playStack.splice(index, 1);
+
+        player.hand.push(card);
+    }
+
     _hasDuplicates(array) {
         return (new Set(array)).size !== array.length;
     }
@@ -109,25 +119,25 @@ module.exports = class Game {
 
             // image needed
             this.deck.push({
-                name: "cat1",
+                name: "cat2",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat1",
+                name: "cat3",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat1",
+                name: "cat4",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat1",
+                name: "cat5",
                 type: "cat"
             });
         }

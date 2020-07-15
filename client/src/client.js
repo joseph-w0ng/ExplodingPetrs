@@ -345,6 +345,11 @@ $(document).ready(() => {
 
     });
 
+    $("#stackSubmit").click(() => {
+        $("#fiveCats").hide();
+        let card = $("#stackChooser").val();
+        socket.emit('fiveCats', gameId, clientId, card);
+    });
 
     // Server events
     socket.on('gameCreated', (id) => {
@@ -499,6 +504,17 @@ $(document).ready(() => {
             $("#cardLabel").hide();
         }
         $("#target").show();
+    });
+
+    socket.on("fiveCats", (stack) => {
+        stack = new Set(stack);
+        for (let card of stack) {
+            $("#stackChooser").append($('<option>', {
+                value: card.name,
+                text: card.name
+            }))
+        }
+        $("#fiveCats").show();
     });
 
     socket.on('invalidMove', () => {

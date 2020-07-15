@@ -231,6 +231,13 @@ io.on('connection', (socket) => {
         io.in(gameId).emit('bombOver');
     });
 
+    socket.on('fiveCats', (gameId, card) => {
+        const room = games[gameId];
+        const game = room.game;
+        game.takeFromStack(card);
+        sendToAll(room.clients, game);
+    });
+
     // origin is a player
     socket.on('targetSelected', (origin, id, gameId, card=null) => {
         // card = null -> two cats or favor
