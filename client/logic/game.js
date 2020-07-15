@@ -31,11 +31,7 @@ module.exports = class Game {
             }
         }
         this._addBombs(players.length-1);
-        this._debugDeck(players.length-1);
-    }
-
-    toString() {
-        return String(this.turnCounter);
+        // this._debugDeck(players.length-1);
     }
 
     takeFromStack(card) {
@@ -65,26 +61,33 @@ module.exports = class Game {
     }
 
     _debugDeck() {
-        for (let i in this.playerList) {
-            this.playerList[i].hand.push({
-                name: "cat1",
-                type: "cat"
-            });
-            this.playerList[i].hand.push({
-                name: "cat2",
-                type: "cat"
-            });
-            this.playerList[i].hand.push({
-                name: "cat3",
-                type: "cat"
-            });
-            this.playerList[i].hand.push({
-                name: "cat4",
-                type: "cat"
-            });
-            this.playerList[i].hand.push({
-                name: "cat5",
-                type: "cat"
+        // for (let i in this.playerList) {
+        //     this.playerList[i].hand.push({
+        //         name: "cat1",
+        //         type: "cat"
+        //     });
+        //     this.playerList[i].hand.push({
+        //         name: "cat2",
+        //         type: "cat"
+        //     });
+        //     this.playerList[i].hand.push({
+        //         name: "cat3",
+        //         type: "cat"
+        //     });
+        //     this.playerList[i].hand.push({
+        //         name: "cat4",
+        //         type: "cat"
+        //     });
+        //     this.playerList[i].hand.push({
+        //         name: "cat5",
+        //         type: "cat"
+        //     });
+        // }
+        this.deck = [];
+        for (let i = 0; i < 6; i++) {
+            this.deck.push({
+                name: "favor",
+                type: "action"
             });
         }
     }

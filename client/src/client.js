@@ -18,8 +18,6 @@ let favorRecipient = null;
 
 const createOption = document.getElementById("createOption");
 const joinOption = document.getElementById("joinOption")
-const createButton = document.getElementById("create");
-const joinButton = document.getElementById("join");
 const gameIdText = document.getElementById("gameId");
 const playerName = document.getElementById("playerName");
 const leaveButton = document.getElementById("leave");
@@ -28,8 +26,7 @@ const sendButton = document.getElementById("send");
 const messageToSend = document.getElementById("chatMsg");
 
 // Constant variables
-// Use cardToImageMap.get(<key>)
-// Need to change cat mappings back
+
 const cardToImageMap = new Map([
     ["defuse", "images/defuse.svg"],
     ["kitten", "images/kitten.svg"],
@@ -77,7 +74,7 @@ const showStartOption = (clients) => {
 }
 
 const showGameId = (id) => {
-    document.getElementById("displayId").innerHTML = "Your game id is: " + id;
+    document.getElementById("displayId").innerHTML = "Your game ID is: " + id;
 };
 
 const updatePlayers = (players) => {
@@ -167,9 +164,8 @@ const onFormSubmitted = (e) => {
 // Event 
 $(document).ready(() => {
     $("#lobby").hide();
+    $("#createOption").toggleClass("optionSelected");
     $('#gameOver').hide();
-    $(".createForm").hide();
-    $(".joinForm").hide();
     $("#gameElements").hide();
     $("#gameContainer").hide();
     $("#target").hide();
@@ -181,44 +177,50 @@ $(document).ready(() => {
     $("#favor").hide();
     $("#waiting").hide();
     $("#fiveCats").hide();
+    $("#gameId").attr("disabled", true);
 
-    createOption.addEventListener("click", e => {
-        $(".joinForm").hide();
-        $(".createForm").show();
+    $("#createOption").click(() => {
+        if (!$("#gameId").is(":disabled")) {
+            $("#gameId").attr("disabled", true);
+            $("#createOption").toggleClass("optionSelected");
+            $("#joinOption").toggleClass("optionSelected");
+        }
+        
     });
 
-    joinOption.addEventListener("click", e => {
-        $(".createForm").hide();
-        $(".joinForm").show();
+    $("#joinOption").click(() => {
+        if ($("#gameId").is(":disabled")) {
+            $("#gameId").attr("disabled", false);
+            $("#createOption").toggleClass("optionSelected");
+            $("#joinOption").toggleClass("optionSelected");
+        }
     });
 
-    createButton.addEventListener("click", e => {
-        name = $.trim(playerName.value)
-        const payLoad = {
-            "clientId": clientId,
-            "name": name
-        }; 
-        playerName.value = '';
-        socket.emit('create', payLoad);
-
-        $("#intro-wrapper").hide();
-        $("#lobby").show();
-        $("#chat").show();
-    });
-
-    joinButton.addEventListener("click", e => {
+    $("#enterGame").click(() => {
         gameId = gameIdText.value;
         name = $.trim(playerName.value)
 
-        const payLoad = {
-            "clientId": clientId,
-            "gameId": $.trim(gameId),
-            "name": name
-        };
-
-        playerName.value = '';
+        let payLoad = null;
+        if ($("#gameId").is(":disabled")) {
+            payLoad = {
+                "clientId": clientId,
+                "name": name
+            }; 
+            socket.emit('create', payLoad);
+        }
+        else {
+            payLoad = {
+                "clientId": clientId,
+                "gameId": $.trim(gameId),
+                "name": name
+            };
+            socket.emit('join', payLoad);
+        }
         gameIdText.value = '';
-        socket.emit('join', payLoad);
+        playerName.value = '';
+
+        $("#intro-wrapper").hide();
+        $("#lobby").show();
         $("#chat").show();
     });
 

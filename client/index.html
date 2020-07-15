@@ -3,6 +3,7 @@
     <head>
         <title>Exploding Kittens Online</title>
         <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     </head>
     <body>
         <!-- <h1>Exploding Kittens</h1> -->
@@ -12,15 +13,12 @@
         </header>
         <div id="intro-wrapper">
             <div id="buttons">
-                <button id="createOption">Create Game</button>
-                <button id="joinOption">Join Game</button>
+                <h2 id="createOption">Create Game</h2>
+                <h2 id="joinOption">Join Game</h2>
             </div>
-            <div id="form">
-                <input type="text" class="joinForm" id="gameId" placeholder="Game ID">
-                <input type="text" class="createForm joinForm" id="playerName" placeholder="Your Name">
-                <button class="createForm" id="create">Submit</button>
-                <button class="joinForm" id="join">Submit</button>
-             </div>
+            <input type="text" class="form" id="gameId" placeholder="Game ID">
+            <input type="text" class="form" id="playerName" placeholder="Your Name">
+            <button class="form" id="enterGame">Submit</button>
             <div class="error">
                 <p id="errorMsg"></p>
             </div>
@@ -68,7 +66,7 @@
                         <div id="otherElements">
                             <div id="target">
                                 <h4 id="targetText">Select a target player:</h4>
-                                <select class="targetSelect" id="normalTargetSelect"></select>
+                                <select id="targetSelect"></select>
                                 <label id="cardLabel" for="cardChooser">Choose a card to steal:</label>
                                 <select id="cardChooser">
                                     <option value="defuse">Defuse</option>
