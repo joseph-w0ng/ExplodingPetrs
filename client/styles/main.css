@@ -1,5 +1,10 @@
+html {
+    height: 100%;
+}
+
 body {
     background-color: #ffe0cc;
+    height: 83%;
 }
 
 h1 {
@@ -17,18 +22,12 @@ h2 {
 }
 
 input[type=text] {
-    padding: 0;
-    position: relative;
-    left: 0;
+    padding-left: 10px;
     border: 1px solid #cdcdcd;
     border-color: rgba(0, 0, 0, .15);
     border-radius: 10px;
     font-family: "Montserrat";
   }
-
-::placeholder {
-    padding-left: 10px;
-}
 
 #buttons {
     display: flex;
@@ -51,16 +50,13 @@ input[type=text] {
 }
 
 #intro-wrapper h2 {
-    /* background-color: #f4511e; */
     margin: auto;
     border: none;
-    /* color: white; */
     text-align: center;
     font-size: 16px;
     opacity: 0.6;
     transition: 0.3s;
     display: inline-block;
-    /* text-decoration: none; */
     cursor: pointer;
     border-radius: 10px;
     padding: auto;
@@ -72,6 +68,15 @@ input[type=text] {
     opacity: 1;
     border: none;
     background-color:#ffcc66;
+}
+
+#displayId {
+    text-align: center;
+    font-size: 22px;
+    background-color: orange;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px orange;
 }
 
 #intro-wrapper h2:hover {
@@ -101,6 +106,7 @@ input[type=text] {
     padding: 20px;
     border-radius: 10px;
     /* grid-template-rows: 50px auto; */
+    box-shadow: 5px b;
 }
 
 #createOption {
@@ -115,7 +121,8 @@ input[type=text] {
     flex-wrap: nowrap;
     padding: 20px;
     overflow-y: auto;
-    min-height: 600px;
+    /* min-height: 600px; */
+    height: 100%;
 }
 
 #gameContainer {
@@ -164,14 +171,19 @@ input[type=text] {
     left: 50%;
     bottom: 0px;
     transform: translate(-50%, -50%);
+    font-family: "Montserrat";
 }
 
 #lobby {
-    display: block;
-    width: 50%;
-    height: 400px;
-    margin: 0px;
+    display: flex;
+    /* width: 50%; */
+    flex-direction: column;
+    height: auto;
+    /* margin: 0px; */
     float: left;
+    margin: 10px auto;
+    font-family: "Montserrat";
+    font-size: 16px;
 }
 
 .error {
@@ -181,6 +193,28 @@ input[type=text] {
 
 #start {
     display: none;
+    margin:  auto;
+    background-color: lightgreen;
+    opacity: 0.6;
+    font-size: 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+#start:hover {
+    opacity: 1;
+}
+
+#leave {
+    background-color: #ff8080;
+    opacity: 0.6;
+    border-radius: 5px;
+    border: none;
+    margin: auto auto 10px auto;
+}
+
+#leave:hover {
+    opacity: 1;
 }
 
 #startButton {
@@ -203,7 +237,7 @@ input[type=text] {
 
 #hand {
     width: 100%;
-    height: 100%;
+    height: 220px;
     border: 1px solid black;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -227,15 +261,14 @@ input[type=text] {
     display: flex;
     flex-direction: column;
     font-family: Verdana;
-    font-size: 12px;
     color: #333333;
-    border: 1px double #FFFFFF;
     padding: 5px;
-    margin: 10px;
+    /* margin: 10px; */
     width: 30%;
     position: relative;
-    border: 1px solid #E9E9E9;
-    float: right;
+    /* float: right; */
+    border: 1px solid black;
+    margin-right: 20px;
 }
 
 #chatBox {
@@ -243,7 +276,8 @@ input[type=text] {
     padding: 0px;
     margin: 0px;
     position:relative;
-    overflow:scroll;
+    overflow-y:auto;
+    word-wrap: normal;
     bottom:0;
     height: 85%;
 }
@@ -318,6 +352,7 @@ input[type=text] {
      flex-direction: column;
      padding: 10px;
      width: 100%;
+     height: auto;
  }
 
  #util {

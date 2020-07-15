@@ -15,7 +15,7 @@ let lastPlayedCards = null;
 let alive = true;
 let favorRecipient = null;
 
-
+const enterGame = document.getElementById("enterGame");
 const createOption = document.getElementById("createOption");
 const joinOption = document.getElementById("joinOption")
 const gameIdText = document.getElementById("gameId");
@@ -74,7 +74,7 @@ const showStartOption = (clients) => {
 }
 
 const showGameId = (id) => {
-    document.getElementById("displayId").innerHTML = "Your game ID is: " + id;
+    document.getElementById("displayId").innerHTML = "Game ID: <b>" + id + "</b>";
 };
 
 const updatePlayers = (players) => {
@@ -310,12 +310,8 @@ $(document).ready(() => {
 
     playerName.addEventListener("keyup", (e) => {
         if (e.keyCode === 13) {
-            if (document.querySelector(".joinForm").style.display === "none") {
-                createButton.click();
-            }
-            else {
-                joinButton.click();
-            }
+            e.preventDefault();
+            $("#enterGame").click();
         }
     })
 
