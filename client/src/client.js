@@ -15,9 +15,6 @@ let lastPlayedCards = null;
 let alive = true;
 let favorRecipient = null;
 
-const enterGame = document.getElementById("enterGame");
-const createOption = document.getElementById("createOption");
-const joinOption = document.getElementById("joinOption")
 const gameIdText = document.getElementById("gameId");
 const playerName = document.getElementById("playerName");
 const leaveButton = document.getElementById("leave");
@@ -165,6 +162,7 @@ const onFormSubmitted = (e) => {
 $(document).ready(() => {
     $("#lobby").hide();
     $("#createOption").toggleClass("optionSelected");
+    $("#joinOption").toggleClass("unselected");
     $('#gameOver').hide();
     $("#gameElements").hide();
     $("#gameContainer").hide();
@@ -184,6 +182,8 @@ $(document).ready(() => {
             $("#gameId").attr("disabled", true);
             $("#createOption").toggleClass("optionSelected");
             $("#joinOption").toggleClass("optionSelected");
+            $("#createOption").toggleClass("unselected");
+            $("#joinOption").toggleClass("unselected");
         }
         
     });
@@ -193,6 +193,8 @@ $(document).ready(() => {
             $("#gameId").attr("disabled", false);
             $("#createOption").toggleClass("optionSelected");
             $("#joinOption").toggleClass("optionSelected");
+            $("#createOption").toggleClass("unselected");
+            $("#joinOption").toggleClass("unselected");
         }
     });
 
@@ -310,7 +312,6 @@ $(document).ready(() => {
 
     playerName.addEventListener("keyup", (e) => {
         if (e.keyCode === 13) {
-            e.preventDefault();
             $("#enterGame").click();
         }
     })

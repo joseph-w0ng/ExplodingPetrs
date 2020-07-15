@@ -17,6 +17,10 @@ button {
     font-family: "Montserrat";
 }
 
+button:hover {
+    opacity: 1;
+}
+
 h2 {
     font-family: "Montserrat";
 }
@@ -42,6 +46,10 @@ input[type=text] {
     opacity: 1;
 }
 
+.unselected {
+    opacity: 0.6;
+}
+
 .form {
     padding-left: 10px;
 }
@@ -54,7 +62,6 @@ input[type=text] {
     border: none;
     text-align: center;
     font-size: 16px;
-    opacity: 0.6;
     transition: 0.3s;
     display: inline-block;
     cursor: pointer;
@@ -65,11 +72,14 @@ input[type=text] {
 #enterGame {
     width: 310px;
     border-radius: 10px;
-    opacity: 1;
+    opacity: 0.6;
     border: none;
     background-color:#ffcc66;
 }
 
+#enterGame:hover {
+    opacity: 1;
+}
 #displayId {
     text-align: center;
     font-size: 22px;
@@ -96,7 +106,6 @@ input[type=text] {
 }
 
 #intro-wrapper {
-    border: 1px solid black;
     display: flex;
     flex-direction: column;
     height: 250px;
@@ -106,7 +115,7 @@ input[type=text] {
     padding: 20px;
     border-radius: 10px;
     /* grid-template-rows: 50px auto; */
-    box-shadow: 5px b;
+    box-shadow: 0 0 5px black;
 }
 
 #createOption {
@@ -213,10 +222,6 @@ input[type=text] {
     margin: auto auto 10px auto;
 }
 
-#leave:hover {
-    opacity: 1;
-}
-
 #startButton {
     display: none;
 }
@@ -254,7 +259,15 @@ input[type=text] {
 }
 
 #leaveInGame {
-    margin: 20px auto auto auto;
+    background-color: #ff8080;
+    opacity: 0.6;
+    border-radius: 5px;
+    border: none;
+    margin: auto auto 10px auto;
+}
+
+#leaveInGame:hover {
+    opacity: 1;
 }
 
 #chat {
@@ -296,17 +309,18 @@ input[type=text] {
     margin-left: 10px;
     margin-right: auto;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: 10px;
     min-width: 100px;
 }
 
 #endTurn {
     height: 20px;
     width: 100px;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 20px;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    /* margin-right: 20px; */
     min-width: 100px;
+    margin: 2px auto auto auto;
 }
 
 #invalidCard {
@@ -329,11 +343,12 @@ input[type=text] {
 
 #play {
     display: none;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 20px;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    /* margin-left: 20px; */
     height: 20px;
     min-width: 100px;
+    margin: 10px auto 0px auto;
 }
 
 #cardsLeft {
@@ -368,6 +383,11 @@ input[type=text] {
      display: flex;
      flex-wrap: nowrap;
      flex-direction: row;
+ }
+
+ #actions {
+    display: flex;
+    flex-direction: column;
  }
 
  #chatMsg {
