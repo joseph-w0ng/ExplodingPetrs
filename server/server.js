@@ -338,11 +338,11 @@ io.on('connection', (socket) => {
 
         if (status === 1) {
             // Also show that a player drew an exploding kitten
-            let index = client.hand.findIndex(card => card.name === "defuse");
+            let index = client.hand.findIndex(card => card.name === "Defuse");
             client.hand.splice(index, 1);
             io.to(client.clientId).emit('defuse', createClientGame(client.clientId, game));
             game.playStack.push({
-                name: "defuse",
+                name: "Defuse",
                 type: "action"
             })
         }
