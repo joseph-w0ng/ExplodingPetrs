@@ -1,6 +1,8 @@
 const http = require('http');
 const express = require('express');
 
+const PORT = process.env.PORT || 8080;
+
 const Game = require('./../client/logic/game.js');
 
 const app = express();
@@ -362,6 +364,6 @@ server.on('error', (err) => {
     console.error('Server error:', err);
 });
 
-server.listen(8080, () => {
-    console.log('Exploding Kittens started on 8080');
+server.listen(PORT, () => {
+    console.log('Exploding Petrs started on ' + PORT);
 });
