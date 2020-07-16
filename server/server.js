@@ -133,9 +133,9 @@ io.on('connection', (socket) => {
     socket.on('create', (payload) => {
         const clientId = payload.clientId;
         const name = payload.name;
-        const gameId = guid();
+        const gameId = guid().toUpperCase();
         while (gameId in games) {
-            gameId = guid();
+            gameId = guid().toUpperCase();
         }
 
         games[gameId] = {
@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
     socket.on('join', (payload) => {
         const clientId = payload.clientId;
         const name = payload.name;
-        const gameId = payload.gameId;
+        const gameId = payload.gameId.toUpperCase();
 
         if (!(gameId in games)) {
             io.to(payload.clientId).emit('gameJoinError');
@@ -248,6 +248,7 @@ io.on('connection', (socket) => {
 
         let init = game.playerList.find(p => p.clientId === origin);
         let player = game.playerList.find(p => p.clientId === id);
+
         if (game.playStack[game.playStack.length - 1].type === "action") {
             io.to(id).emit('favor', init);
             io.in(gameId).emit('favorAsked', init.name, player.name);
@@ -352,6 +353,7 @@ io.on('connection', (socket) => {
                 io.to(gameId).emit('gameOver', room.clients, game.playerList);
             }
         }
+        io.to(gameId).emit("hideElements");
         sendToAll(room.clients, game);
     });
 });

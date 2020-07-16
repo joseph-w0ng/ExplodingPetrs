@@ -99,7 +99,7 @@ const updatePlayers = (players) => {
 const updateGameState = (game) => { // client game object
 
     if (game.turn === clientId) {
-        $("#turn").html("It is your turn!");
+        $("#turn").html("Your turn!");
         $("#endTurn").show();
         $("#play").show();
         currentTurn = true;
@@ -108,7 +108,7 @@ const updateGameState = (game) => { // client game object
     else {
         $("#play").hide();
         $("#endTurn").hide();
-        $("#turn").html("It is " + game.turnName + "'s turn!");
+        $("#turn").html(game.turnName + "'s turn!");
         currentTurn = false;
     }
     if (game.stack.length > 0) {
@@ -291,7 +291,8 @@ $(document).ready(() => {
         $(".selected").each(function() {
             cards.push($(this).attr("alt"));
         });
-
+        $("#future").hide();
+        
         socket.emit('cardPlayed', cards, gameId, clientId);
     });
 
@@ -317,7 +318,7 @@ $(document).ready(() => {
     })
 
     $("#submitTarget").click(() => {
-        let id = $("#normalTargetSelect").val();
+        let id = $("#targetSelect").val();
         $("#targetText").hide();
         $("#targetSelect").hide();
         $("#submitTarget").hide();
@@ -329,7 +330,7 @@ $(document).ready(() => {
         else {
             socket.emit('targetSelected', clientId, id, gameId);
         }
-       
+       $("#actions").show();
     });
 
     $("#give").click(() => {
@@ -394,6 +395,7 @@ $(document).ready(() => {
         $("#lobby").hide();
         $("#startButton").hide();
         $("#gameContainer").show();
+        $("#instructions").hide();
         alive = true;
         document.getElementById("stack").src = "images/empty.svg";
         updateGameState(game);
@@ -414,6 +416,7 @@ $(document).ready(() => {
         // $("#turnContainer").hide();
         updateGameState(game);
         $("#order").show();
+        $("#actions").hide();
         $("#orderSelect").empty();
         $("#orderSelect").append($('<option>', {
             value: 1,
@@ -446,7 +449,7 @@ $(document).ready(() => {
 
     socket.on('bombOver', () => {
         $("#infoText").html('');
-        $("#expoded").hide();
+        $("#info").hide();
     });
 
     socket.on('gameOver', (clients, players) => {
@@ -478,8 +481,10 @@ $(document).ready(() => {
     });
 
     socket.on('favorAsked', (stealer, victim) => {
-        $("#info").show();
-        $("#infoText").html(stealer + " has asked " + victim + "for a favor!");
+        if (!$("#favor").is(":visible")) {
+            $("#info").show();
+            $("#infoText").html(stealer + " has asked " + victim + " for a favor!");
+        }
     });
 
     socket.on('cardStolen', (stealer, victim) => {
@@ -488,10 +493,11 @@ $(document).ready(() => {
     });
 
     socket.on('selectTarget', (players, threeCats=false) => {
-        $(".targetSelect").empty();
+        $("#actions").hide();
+        $("#targetSelect").empty();
         for (let player of players) {
             if (player.id != clientId) {
-                $(".targetSelect").append($('<option>', {
+                $("#targetSelect").append($('<option>', {
                     value: player.id,
                     text: player.name
                 }))
@@ -530,6 +536,11 @@ $(document).ready(() => {
         $("#submitTarget").show();
         $("#waiting").hide();
         $("#target").hide();
+    });
+
+    socket.on("hideElements", () => {
+        $("#info").hide();
+        $("#infoText").html('');
     });
 });
 

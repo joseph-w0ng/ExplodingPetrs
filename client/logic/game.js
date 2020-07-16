@@ -36,9 +36,7 @@ module.exports = class Game {
 
     takeFromStack(card) {
         let player = this.playerList[this.turnCounter];
-        console.log(this.playStack);
         let index = this.playStack.findIndex(c => c.name === card);
-        console.log(index, card);
  
         let cardToTake = this.playStack[index];
         this.playStack.splice(index, 1);
@@ -183,7 +181,7 @@ module.exports = class Game {
 
     isValidCombination(cards) {
         if (cards.length === 1) {
-            if (cards[0].type != "action") {
+            if (cards[0].type != "action" || cards[0].name === "defuse") {
                 return false;
             }
             return true;
