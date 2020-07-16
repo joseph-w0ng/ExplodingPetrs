@@ -25,20 +25,19 @@ const messageToSend = document.getElementById("chatMsg");
 // Constant variables
 
 const cardToImageMap = new Map([
-    ["defuse", "images/defuse.svg"],
-    ["kitten", "images/kitten.svg"],
-    ["nope", "images/nope.svg"],
-    ["skip", "images/skip.svg"],
-    ["attack", "images/attack.svg"],
-    ["favor", "images/favor.svg"],
-    ["see future", "images/seefuture.svg"],
-    ["shuffle", "images/shuffle.svg"],
-    ["draw bottom", "images/drawbottom.svg"],
-    ["cat1", "images/cat1.svg"],
-    ["cat2", "images/cat2.svg"],
-    ["cat3", "images/cat3.svg"],
-    ["cat4", "images/cat4.svg"],
-    ["cat5", "images/cat5.svg"],
+    ["Defuse", "images/defuse.svg"],
+    ["Exploding Petr", "images/explodingpetr.svg"],
+    ["Skip", "images/skip.svg"],
+    ["Attack", "images/attack.svg"],
+    ["Favor", "images/favor.svg"],
+    ["See the Future", "images/seefuture.svg"],
+    ["Shuffle", "images/shuffle.svg"],
+    ["Draw from the Bottom", "images/drawbottom.svg"],
+    ["Boba Petr", "images/bobapetr.svg"],
+    ["Dark Petr", "images/darkpetr.svg"],
+    ["In n Out Petr", "images/innoutpetr.svg"],
+    ["Petr the Anteater", "images/origpetr.svg"],
+    ["Panda Petr", "images/pandapetr.svg"],
 ]);
 
 

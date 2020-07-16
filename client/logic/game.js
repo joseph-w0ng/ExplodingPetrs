@@ -22,7 +22,7 @@ module.exports = class Game {
             })
 
             this.playerList[i].hand.push({
-                name: "defuse",
+                name: "Defuse",
                 type: "action"
             })
             // deal each player a hand of 5 cards (total)
@@ -52,39 +52,17 @@ module.exports = class Game {
         // insert bombs at random locations
         for (var i = 0; i < bombs; i++) {
             this.deck.splice(Math.random() * this.deck.length, 0, {
-                name: "kitten",
+                name: "Exploding Petr",
                 type: "bomb"
             })
         }
     }
 
     _debugDeck() {
-        // for (let i in this.playerList) {
-        //     this.playerList[i].hand.push({
-        //         name: "cat1",
-        //         type: "cat"
-        //     });
-        //     this.playerList[i].hand.push({
-        //         name: "cat2",
-        //         type: "cat"
-        //     });
-        //     this.playerList[i].hand.push({
-        //         name: "cat3",
-        //         type: "cat"
-        //     });
-        //     this.playerList[i].hand.push({
-        //         name: "cat4",
-        //         type: "cat"
-        //     });
-        //     this.playerList[i].hand.push({
-        //         name: "cat5",
-        //         type: "cat"
-        //     });
-        // }
         this.deck = [];
         for (let i = 0; i < 6; i++) {
             this.deck.push({
-                name: "favor",
+                name: "Favor",
                 type: "action"
             });
         }
@@ -94,76 +72,70 @@ module.exports = class Game {
         // push action and cat cards
         for (var i = 0; i < numPlayers - 1; i++) {   
             this.deck.push({
-                name: "attack",
+                name: "Attack",
                 type: "action"
             });
         }
 
         for (var i = 0; i < 2*numPlayers - 1; i++) {
             this.deck.push({
-                name: "skip",
+                name: "Skip",
                 type: "action"
             });
 
             this.deck.push({
-                name: "shuffle",
+                name: "Shuffle",
                 type: "action"
             });
 
             this.deck.push({
-                name: "see future",
-                type: "action"
-            });
-            
-            // Not viable to implement
-            // this.deck.push({
-            //     name: "nope",
-            //     type: "action"
-            // });
-
-            this.deck.push({
-                name: "draw bottom",
+                name: "See the Future",
                 type: "action"
             });
 
             this.deck.push({
-                name: "favor",
+                name: "Draw from the Bottom",
+                type: "action"
+            });
+
+            this.deck.push({
+                name: "Favor",
                 type: "action"
             });
 
             // image needed
             this.deck.push({
-                name: "cat1",
+                name: "Boba Petr",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat2",
+                name: "Dark Petr",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat3",
+                name: "In n Out Petr",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat4",
+                name: "Petr the Anteater",
                 type: "cat"
             });
 
             // image needed
             this.deck.push({
-                name: "cat5",
+                name: "Panda Petr",
                 type: "cat"
             });
         }
         // Add an extra defuse to the deck
         this.deck.push({
-            name: "defuse",
+            name: "Defuse",
             type: "action"
         })
     };
@@ -181,7 +153,7 @@ module.exports = class Game {
 
     isValidCombination(cards) {
         if (cards.length === 1) {
-            if (cards[0].type != "action" || cards[0].name === "defuse") {
+            if (cards[0].type != "action" || cards[0].name === "Defuse") {
                 return false;
             }
             return true;
@@ -291,12 +263,12 @@ module.exports = class Game {
 
         if (playedCards.length === 1) {
             switch(playedCards[0].name) {
-                case "attack":
+                case "Attack":
                     this.attackTurns += 2;
                     this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
                     return 6;
                 // TODO
-                case "favor":
+                case "Favor":
                     return 2;
                 case "skip":
                     this.attackTurns -= 1; 
@@ -304,12 +276,12 @@ module.exports = class Game {
                         this.turnCounter = (this.turnCounter + 1) % this.playerList.length;
                     }
                     return 6;
-                case "shuffle":
+                case "Shuffle":
                     this.shuffle();
                     return 0;
-                case "see future":
+                case "See the Future":
                     return 5;
-                case "draw bottom":
+                case "Draw from the Bottom":
                     this.drawFromBottom = true;
                     return 0;
             }
@@ -340,7 +312,7 @@ module.exports = class Game {
 
     playDefuse(index) {
         this.deck.splice(this.deck.length-index+1, 0, {
-            name: "kitten",
+            name: "Exploding Petr",
             type: "bomb"
         })
 
@@ -372,7 +344,7 @@ module.exports = class Game {
         
 
         if (card.type === "bomb") {
-            if (!player.hand.some(item => item.name === 'defuse')) {
+            if (!player.hand.some(item => item.name === 'Defuse')) {
                 this.playerList[this.turnCounter].alive = false;
                 this.playersAlive -= 1;
                 this.playStack.push(card);
