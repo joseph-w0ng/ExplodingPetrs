@@ -25,8 +25,8 @@ module.exports = class Game {
                 name: "Defuse",
                 type: "action"
             })
-            // deal each player a hand of 5 cards (total)
-            for (var j = 0; j < 4; j++) {
+            // deal each player a hand of 7 cards (total)
+            for (var j = 0; j < 6; j++) {
                 this.playerList[i].hand.push(this.deck.pop());
             }
         }

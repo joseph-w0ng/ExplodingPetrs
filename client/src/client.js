@@ -441,7 +441,7 @@ $(document).ready(() => {
     });
 
     socket.on('bombDrawn', (playerName) => {
-        $("#infoText").html(playerName + " has drawn an exploding kitten!");
+        $("#infoText").html(playerName + " has drawn an Exploding Petr!");
         $("#info").show();
         $("#infoText").show();
     });

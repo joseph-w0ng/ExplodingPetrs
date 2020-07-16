@@ -7,6 +7,53 @@
     </head>
     <body>
         <h1>How to Play</h1>
-        <p>The goal of the game is to be the last player remaining in the game. (insert garbage instructions) </p>
+        <section id="goal">
+            <h3>Goal of the game</h3>
+            <p>The goal of the game is to be the last player remaining in the game. Players take turn drawing cards until someone draws an Exploding Petr. To end your turn, you must draw from the pile.</p>
+        </section>
+        <section id="action">
+            <h3>Action Cards</h3>
+            <p>
+                Action cards help prevent you from dying to an Exploding Petr. Each player is dealt a hand of seven cards, one of which is guaranteed to be a Defuse card.
+                The defuse card allows a player to defuse the Exploding Petr and place it back into the deck. 
+            </p>
+            <p>
+                The other action cards allow the player to take various actions that can decrease their chances of drawing an Exploding Petr. Here is a list of the action cards 
+                that are in the game:
+                <ul>
+                    <li>Skip: Skip your current turn.</li>
+                    <li>Attack: Skip your current turn, and the next player must take two turns. (Note: attack cards stack! If someone plays an attack, and another person plays another attack on top of it, the following player must take four turns.)</li>
+                    <li>See the Future: Privately take a peek at the top three cards of the deck.</li>
+                    <li>Draw from the Bottom: End your turn by drawing from the bottom of the deck.</li>
+                    <li>Shuffle: Shuffle the deck.</li>
+                    <li>Favor: Ask a player to give you a card of their choice.</li>
+                </ul>
+            </p>
+        </section>
+        <section id="petrs">
+            <h3>Petr Cards</h3>
+            <p>
+                Petr cards are used only in special combos. 
+                <ul>
+                    <li>Two of a kind: Steal a random card from a player's hand.</li>
+                    <li>Three of a kind: Name a card. If the player has the card, you will steal that card from their hand. If the player does not have the card, you will not get any cards.</li>
+                    <li>Five different Petrs: Choose a card from the play stack and add it to your hand.</li>
+                </ul>
+            </p>
+        </section>
+        <section id="ui">
+            <h3>Miscellaneous</h3>
+            <img src="images/help.png" width="400" height="300"/>
+            <p>
+                The top panel shows the deck and the stack of cards played. It also shows useful information, including the players alive and the number of cards remaining in the deck.
+            </p>
+            <p>
+                The middle panel shows actions that are pending or status updates. This will show whose turn it is, and other updates such as players drawing Exploding Petrs, players stealing cards from each other, etc.
+            </p>
+            <p>
+                The panel on the lower third of the screen shows your current hand. To play cards, click on the cards and press the "Play Cards" button.
+            </p>
+
+        </section>
     </body>
 </html>
