@@ -74,11 +74,9 @@ const sendToAll = (clientList, game) => {
         io.to(client.clientId).emit('gameStateUpdated', createClientGame(client.clientId, game));
     }
 };
-// const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 
 
 io.on('connection', (socket) => {
-
     // On game disconnect:
     socket.on('disconnect', () => {
         if (!(socket.id in allClients)) {

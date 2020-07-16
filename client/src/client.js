@@ -96,7 +96,7 @@ const updatePlayers = (players) => {
 
 // TODO: change so that client only sees what is necessary, no need to send entire game
 const updateGameState = (game) => { // client game object
-
+    $("#actions").show();
     if (game.turn === clientId) {
         $("#turn").html("Your turn!");
         $("#endTurn").show();
@@ -348,8 +348,7 @@ $(document).ready(() => {
 
     $("#stackSubmit").click(() => {
         $("#fiveCats").hide();
-        let card = $("#stackChooser").val();
-        console.log(card);  
+        let card = $("#stackChooser").val(); 
         socket.emit('fiveCats', gameId, card);
     });
 
@@ -529,7 +528,6 @@ $(document).ready(() => {
     });
 
     socket.on('cardReceived', () => {
-        console.log("card received");
         $("#targetText").show();
         $("#targetSelect").show();
         $("#submitTarget").show();

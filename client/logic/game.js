@@ -31,7 +31,7 @@ module.exports = class Game {
             }
         }
         this._addBombs(players.length-1);
-        // this._debugDeck(players.length-1);
+        this._debugDeck(players.length-1);
     }
 
     takeFromStack(card) {
@@ -60,10 +60,10 @@ module.exports = class Game {
 
     _debugDeck() {
         this.deck = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i in this.playerList) {
             this.deck.push({
-                name: "Favor",
-                type: "action"
+                name: "Exploding Petr",
+                type: "bomb"
             });
         }
     }
