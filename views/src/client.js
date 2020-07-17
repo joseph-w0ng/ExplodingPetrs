@@ -75,7 +75,7 @@ const showStartOption = (clients) => {
 }
 
 const showGameId = (id) => {
-    document.getElementById("displayId").innerHTML = "Game ID: <b>" + id + "</b>";
+    document.getElementById("displayId").innerHTML = "Game ID: <b>" + id + "</b> <br> Send this link to your friends! <br> exploding-petrs.herokuapp.com/" + gameId;
 };
 
 const updatePlayers = (players) => {
