@@ -42,6 +42,11 @@ const cardToImageMap = new Map([
 
 
 // Helper functions
+function strip(html){
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+ }
+
 const showStartOption = (clients) => {
     let parent = document.getElementById("startGame")
     let text = document.getElementById("hostText");
@@ -78,17 +83,17 @@ const updatePlayers = (players) => {
     for (let player of players) {
         if (player.isAdmin) {
             if (player.clientId === clientId) {
-                $("<li>" + player.name + " (Host, You)</li>").appendTo("#playerList");
+                $("<li>" + strip(player.name) + " (Host, You)</li>").appendTo("#playerList");
             }
             else {
-                $("<li>" + player.name + " (Host)</li>").appendTo("#playerList");
+                $("<li>" + strip(player.name) + " (Host)</li>").appendTo("#playerList");
             }
         }
         else if (player.clientId === clientId) {
-            $("<li>" + player.name + " (You) </li>").appendTo("#playerList");
+            $("<li>" + strip(player.name) + " (You) </li>").appendTo("#playerList");
         }
         else {
-            $("<li>" + player.name + "</li>").appendTo("#playerList");
+            $("<li>" + strip(player.name) + "</li>").appendTo("#playerList");
         }
         
     }
@@ -210,10 +215,10 @@ $(document).ready(() => {
             $("#errorMsg").html('');
         }
 
-        if (name.includes("<script>")) {
-            $("#errorMsg").html('No. Just no.');
-            return;
-        }
+        // if (name.includes(">")) {
+        //     $("#errorMsg").html('No. Just no.');
+        //     return;
+        // }
 
         let payLoad = null;
         if ($("#gameId").is(":disabled")) {
