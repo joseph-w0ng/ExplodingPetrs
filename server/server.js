@@ -30,7 +30,7 @@ function strip(html){
 function checkPacket(gameId, clientId) {
     const room = games[gameId];
     const game = room.game;
-
+    
     if (!(gameId in games) || !room.started) {
         return false;
     }
@@ -38,6 +38,7 @@ function checkPacket(gameId, clientId) {
         return false;
     }
     
+    return true;
 }
 const createClientGame = (clientId, game) => {
     let userTurn = game.playerList[game.turnCounter].clientId;
