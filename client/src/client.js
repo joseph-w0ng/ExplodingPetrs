@@ -132,10 +132,10 @@ const updateGameState = (game) => { // client game object
     for (let player of game.players) {
         if (player.alive) {
             if (player.clientId === clientId) {
-                $("#playersAlive").append('<li>' + player.name + ' (You)</li>');
+                $("#playersAlive").append('<li>' + strip(player.name) + ' (You)</li>');
             }
             else {
-                $("#playersAlive").append('<li>' + player.name + ' (' + player.cards + ' cards)</li>');
+                $("#playersAlive").append('<li>' + strip(player.name) + ' (' + player.cards + ' cards)</li>');
             }
 
             $("#hand").show();
@@ -206,7 +206,7 @@ $(document).ready(() => {
         gameId = gameIdText.value;
         name = $.trim(playerName.value)
 
-        if (name.length === 0) {
+        if (strip(name).length === 0) {
             $("#errorMsg").html('Please enter a name.');
             return;
         }
@@ -214,11 +214,6 @@ $(document).ready(() => {
         else {
             $("#errorMsg").html('');
         }
-
-        // if (name.includes(">")) {
-        //     $("#errorMsg").html('No. Just no.');
-        //     return;
-        // }
 
         let payLoad = null;
         if ($("#gameId").is(":disabled")) {
