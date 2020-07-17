@@ -343,10 +343,10 @@ $(document).ready(() => {
         $("#waiting").show();
         if ($("#cardChooser").is(":visible")) {
             let card = $("#cardChooser").val();
-            socket.emit('targetSelected', clientId, id, gameId, clientId, card);
+            socket.emit('targetSelected', clientId, id, gameId, card);
         }
         else {
-            socket.emit('targetSelected', clientId, id, gameId, clientId);
+            socket.emit('targetSelected', clientId, id, gameId);
         }
        $("#actions").show();
     });

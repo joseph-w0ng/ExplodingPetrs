@@ -272,10 +272,10 @@ io.on('connection', (socket) => {
     });
 
     // origin is a player
-    socket.on('targetSelected', (origin, id, gameId, clientId, card=null) => {
+    socket.on('targetSelected', (origin, id, gameId, card=null) => {
         // card = null -> two cats or favor
         // card != null -> 3 cats
-        if (!checkPacket(gameId, destination)) {
+        if (!checkPacket(gameId, origin)) {
             return;
         }
 
