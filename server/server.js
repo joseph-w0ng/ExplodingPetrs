@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
 
         allClients[clientId] = gameId;
 
-        let message = strip(name) + " has joined the game."
+        let message = name + " has joined the game."
         io.in(gameId).emit('newChat', message);
         io.in(gameId).emit("playerChanged", room.clients);
         socket.join(gameId);
