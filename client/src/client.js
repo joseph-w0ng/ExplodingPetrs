@@ -259,7 +259,7 @@ $(document).ready(() => {
     });
 
     startButton.addEventListener("click", (e) => {
-        socket.emit('ready', gameId);
+        socket.emit('ready', gameId, clientId);
     });
 
     sendButton.addEventListener("click", (e) => {
@@ -299,7 +299,7 @@ $(document).ready(() => {
         $("#order").hide();
         $("#invalidOrder").hide();
         $("#turnContainer").show();
-        socket.emit('defused', index, gameId);
+        socket.emit('defused', index, gameId, clientId);
     });
 
     $("#play").click(() => {
@@ -342,10 +342,10 @@ $(document).ready(() => {
         $("#waiting").show();
         if ($("#cardChooser").is(":visible")) {
             let card = $("#cardChooser").val();
-            socket.emit('targetSelected', clientId, id, gameId, card);
+            socket.emit('targetSelected', clientId, id, gameId, clientId, card);
         }
         else {
-            socket.emit('targetSelected', clientId, id, gameId);
+            socket.emit('targetSelected', clientId, id, gameId, clientId);
         }
        $("#actions").show();
     });
@@ -367,7 +367,7 @@ $(document).ready(() => {
     $("#stackSubmit").click(() => {
         $("#fiveCats").hide();
         let card = $("#stackChooser").val(); 
-        socket.emit('fiveCats', gameId, card);
+        socket.emit('fiveCats', gameId, card, clientId);
     });
 
     // Server events

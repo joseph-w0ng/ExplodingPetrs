@@ -27,6 +27,18 @@ function strip(html){
     return doc.body.textContent || "";
  }
 
+function checkPacket(gameId, clientId) {
+    const room = games[gameId];
+    const game = room.game;
+
+    if (!(gameId in games) || !room.started) {
+        return false;
+    }
+    if (clientId != game.playerList[game.turnCounter].clientId) {
+        return false;
+    }
+    
+}
 const createClientGame = (clientId, game) => {
     let userTurn = game.playerList[game.turnCounter].clientId;
     let name = game.playerList[game.turnCounter].name;
@@ -216,8 +228,16 @@ io.on('connection', (socket) => {
         io.in(payload.gameId).emit('newChat', chatMsg);
     });
     // Game ready to start
-    socket.on('ready', (gameId) => {
+    socket.on('ready', (gameId, clientId) => {
         const room = games[gameId];
+        if (room.clients.length < 2) {
+            return;
+        }
+        let player = room.clients.find(p => p.clientId === clientId)
+        if (player == null || !player.isAdmin) {
+            return;
+        }
+
         room.game = new Game(room.clients);
         const game = room.game;
         room.started = true;
@@ -228,25 +248,37 @@ io.on('connection', (socket) => {
     });
 
     // Player chose a place to defuse
-    socket.on('defused', (index, gameId) => {
+    socket.on('defused', (index, gameId, clientId) => {
+        if (!checkPacket(gameId, clientId)) {
+            return;
+        }
         const room = games[gameId];
         const game = room.game;
+
         game.playDefuse(index);
         sendToAll(room.clients, game);
         io.in(gameId).emit('bombOver');
     });
 
-    socket.on('fiveCats', (gameId, card) => {
+    socket.on('fiveCats', (gameId, card, clientId) => {
+        if (!checkPacket(gameId, clientId)) {
+            return;
+        }
+
         const room = games[gameId];
         const game = room.game;
+
         game.takeFromStack(card);
         sendToAll(room.clients, game);
     });
 
     // origin is a player
-    socket.on('targetSelected', (origin, id, gameId, card=null) => {
+    socket.on('targetSelected', (origin, id, gameId, clientId, card=null) => {
         // card = null -> two cats or favor
         // card != null -> 3 cats
+        if (!checkPacket(gameId, destination)) {
+            return;
+        }
 
         const room = games[gameId];
         const game = room.game;
@@ -269,6 +301,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('giveCard', (gameId, card, origin, destination) => {
+        if (!checkPacket(gameId, destination)) {
+            return;
+        }
         const room = games[gameId];
         const game = room.game;
 
@@ -280,12 +315,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('cardPlayed', (cardsToPlay, gameId, clientId) => { // cards are just card names
-        const room = games[gameId];
-        const game = room.game;
-        if (clientId != game.playerList[game.turnCounter].clientId) {
+        if (!checkPacket(gameId, clientId)) {
             return;
         }
-        
+        const room = games[gameId];
+        const game = room.game;
+    
         let status = game.playCards(cardsToPlay);
 
         switch(status) {    
@@ -338,11 +373,12 @@ io.on('connection', (socket) => {
     });
     // Turn end
     socket.on('endTurn', (gameId, clientId) => {
-        const room = games[gameId];
-        const game = room.game;
-        if (clientId != game.playerList[game.turnCounter].clientId) {
+        if (!checkPacket(gameId, clientId)) {
             return;
         }
+        const room = games[gameId];
+        const game = room.game;
+
         let status = game.endTurn();
         let client = game.playerList[game.turnCounter];
 
