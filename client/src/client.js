@@ -211,6 +211,10 @@ $(document).ready(() => {
             return;
         }
 
+        if (name.length > 20) {
+            $("#errorMsg").html("Your name is too long.");
+        }
+
         else {
             $("#errorMsg").html('');
         }

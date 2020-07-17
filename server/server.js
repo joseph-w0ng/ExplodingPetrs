@@ -22,6 +22,11 @@ const allClients = {};
 const games = {};
 
 // Helper functions
+function strip(html){
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+ }
+
 const createClientGame = (clientId, game) => {
     let userTurn = game.playerList[game.turnCounter].clientId;
     let name = game.playerList[game.turnCounter].name;
@@ -198,7 +203,7 @@ io.on('connection', (socket) => {
 
         allClients[clientId] = gameId;
 
-        let message = name + " has joined the game."
+        let message = strip(name) + " has joined the game."
         io.in(gameId).emit('newChat', message);
         io.in(gameId).emit("playerChanged", room.clients);
         socket.join(gameId);
