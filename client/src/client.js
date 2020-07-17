@@ -210,6 +210,11 @@ $(document).ready(() => {
             $("#errorMsg").html('');
         }
 
+        if (name.includes("<script>")) {
+            $("#errorMsg").html('No. Just no.');
+            return;
+        }
+
         let payLoad = null;
         if ($("#gameId").is(":disabled")) {
             payLoad = {
