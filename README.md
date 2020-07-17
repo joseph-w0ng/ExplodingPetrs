@@ -2,4 +2,7 @@
 
 Heavily inspired by the popular game Exploding Kittens.
 
-Link: 
+Tools used: Node.js, Express, Socket.io, HTML5, CSS
+<br />
+Working link: https://exploding-petrs.herokuapp.com/
+
