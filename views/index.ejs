@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Exploding Petrs</title>
+        <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    </head>
+    <body>
+        <!-- <h1>Exploding Kittens</h1> -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <header id="title">
+            <h1>Exploding Petrs</h1>
+            <h4 id="subtitle">Inspired by the popular game Exploding Kittens</h4>
+        </header>
+        <div id="intro-wrapper">
+            <div id="buttons">
+                <h2 id="createOption">Create Game</h2>
+                <h2 id="joinOption">Join Game</h2>
+            </div>
+            <input type="text" class="form" id="gameId" placeholder="Game ID" value=<%= gameId %>>
+            <input type="text" class="form" id="playerName" placeholder="Your Name">
+            <button class="form" id="enterGame">Submit</button>
+            <div class="error">
+                <p id="errorMsg"></p>
+            </div>
+        </div>
+        <div id="gameElements">
+            <div id="lobby">
+                <div id="gameOver">
+                    <p id="winner"></p>
+                </div>
+                <div id="displayId">    
+                </div>
+                <div id="otherPlayers">
+                    <h4>Players:</h4>
+                    <ul id="playerList">
+                    </ul>
+                </div>
+                <div id="startGame">
+                    <p id="hostText"></p>
+                    <button id="start">Start Game!</button>
+                </div>
+                <button id="leave">Leave Game</button>
+            </div>
+            <div id="gameContainer">
+                <div id="game">
+                    <div id="deck">
+                        <img src="images/back.svg" width=150px height=200px>
+                        <img id="stack" src="images/empty.svg" width=150px min-height=200px>
+                        <div id="cardsLeft"></div>
+                        <div id="players">
+                            <h4>Players:</h4>
+                            <ul id="playersAlive">
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="turnContainer">
+                        <div id="actions">
+                            <p id="turn"></p>
+                            <button id="play">Play Cards</button>
+                            <button id='endTurn'>End Turn</button>
+                            <p id="invalidCard" class="error"></p>
+                        </div>
+                        <div id="otherElements">
+                            <div id="info">
+                                <p id="infoText"></p>
+                            </div>
+                            <div id="target">
+                                <h4 id="targetText">Select a target player:</h4>
+                                <select id="targetSelect"></select>
+                                <label id="cardLabel" for="cardChooser">Choose a card to steal:</label>
+                                <select id="cardChooser">
+                                    <option value="defuse">Defuse</option>
+                                    <option value="attack">Attack</option>
+                                    <option value="skip">Skip</option>
+                                    <option value="favor">Favor</option>
+                                    <option value="shuffle">Shuffle</option>
+                                    <option value="draw bottom">Draw from the Bottom</option>
+                                </select>
+                                <button id="submitTarget">Submit!</button>
+                                <p id="waiting">Waiting for player response...</p>
+                            </div>
+                            <div id="fiveCats">
+                                <select id="stackChooser"></select>
+                                <button id="stackSubmit">Submit!</button>
+                            </div>
+                            <div id="order">
+                                <label for="orderSelect">You drew an exploding kitten! Place the kitten back in the deck:</label>
+                                <select id="orderSelect"></select>
+                                <button id="submitIndex">Submit!</button>
+                            </div>
+                            <div id="future">
+                                <h4>See the Future </h4>
+                                <div id="futureCards">
+                                    <div width="150" height="200" margin="auto">
+                                        <p id="topIndicator">Top of deck:</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div id="pickFromStack">
+                            </div>
+                            <div id="favor">
+                                <h4 id="favorInfo"></h4>
+                                <p>Select a card.</p>
+                                <button id="give">Give Card</button>
+                                <p class="error" id="invalidSelect"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="hand">
+                    </div>
+                    <button id="leaveInGame">Leave Game</button>
+                </div>
+ 
+                
+            </div>
+            <div id="chat">
+                <h4>Chat</h4>
+                <ul id="chatBox">
+                </ul>
+                <div id="sendMsg">
+                    <input type="text" id="chatMsg" placeholder="Send Message">
+                    <button id="send">Send</button>
+                </div>
+                
+            </div>
+        </div>
+        <div id="instructions">
+            <a href="#" onClick="MyWindow=window.open('help.html','MyWindow','width=600,height=600'); return false;">How to Play</a>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="src/client.js"></script>
+    </body>
+</html>
