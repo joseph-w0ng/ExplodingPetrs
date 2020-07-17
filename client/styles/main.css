@@ -61,9 +61,6 @@ input[type=text] {
     opacity: 0.6;
 }
 
-.form {
-    padding-left: 10px;
-}
 #intro-wrapper #buttons button {
     margin: 4px 2px;
 }
@@ -175,7 +172,9 @@ input[type=text] {
     width: 300px;
     font-size: 20px;
     margin: 5px auto;
+    padding-left: 10px;
     /* margin-left: auto; */
+    position: relative;
     line-height: 10px;
 }
 
@@ -207,7 +206,13 @@ input[type=text] {
 
 .error {
     color: red;
-    font-size: 12px;
+    font-size: 14px;
+    font-family: "Montserrat";
+}
+
+#errorMsg {
+    margin: 0px;
+    height: 20px;
 }
 
 #start {

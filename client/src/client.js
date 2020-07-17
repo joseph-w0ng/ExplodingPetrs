@@ -201,6 +201,15 @@ $(document).ready(() => {
         gameId = gameIdText.value;
         name = $.trim(playerName.value)
 
+        if (name.length === 0) {
+            $("#errorMsg").html('Please enter a name.');
+            return;
+        }
+
+        else {
+            $("#errorMsg").html('');
+        }
+
         let payLoad = null;
         if ($("#gameId").is(":disabled")) {
             payLoad = {
