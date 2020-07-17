@@ -3,14 +3,25 @@ const express = require('express');
 
 const PORT = process.env.PORT || 8080;
 
-const Game = require('./../client/logic/game.js');
+const Game = require(`${__dirname}/game.js`);
 
 const app = express();
 
-const clientPath = `${__dirname}/../client`;
+const clientPath = `${__dirname}/../views`;
 console.log(`Serving static from ${clientPath}`);
 
+app.set('views', clientPath);
+app.set("view engine", "ejs");
+
 app.use(express.static(clientPath));
+
+app.get('/', function(req, res) {
+    res.render("index", {gameId: ''});
+});
+
+app.get('/:gameId', function(req, res) {
+    res.render("index", {gameId: req.params.gameId})
+});
 
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
@@ -30,7 +41,7 @@ function strip(html){
 function checkPacket(gameId, clientId) {
     const room = games[gameId];
     const game = room.game;
-    
+
     if (!(gameId in games) || !room.started) {
         return false;
     }
