@@ -163,24 +163,25 @@ const onFormSubmitted = (e) => {
 };
 
 // Event 
-$(document).ready(() => {
-    $("#lobby").hide();
-    $("#createOption").toggleClass("optionSelected");
-    $("#joinOption").toggleClass("unselected");
-    $('#gameOver').hide();
-    $("#gameElements").hide();
-    $("#gameContainer").hide();
-    $("#target").hide();
-    $("#order").hide();
-    $("#future").hide();
-    $("#pickFromStack").hide();
-    $("#info").hide();
-    $("#sayNo").hide();
-    $("#favor").hide();
-    $("#waiting").hide();
-    $("#fiveCats").hide();
-    $("#gameId").attr("disabled", true);
 
+$("#lobby").hide();
+$("#createOption").toggleClass("optionSelected");
+$("#joinOption").toggleClass("unselected");
+$('#gameOver').hide();
+$("#gameElements").hide();
+$("#gameContainer").hide();
+$("#target").hide();
+$("#order").hide();
+$("#future").hide();
+$("#pickFromStack").hide();
+$("#info").hide();
+$("#sayNo").hide();
+$("#favor").hide();
+$("#waiting").hide();
+$("#fiveCats").hide();
+$("#gameId").attr("disabled", true);
+
+$(document).ready(() => {
     $("#createOption").click(() => {
         if (!$("#gameId").is(":disabled")) {
             $("#gameId").attr("disabled", true);

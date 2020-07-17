@@ -109,7 +109,6 @@ io.on('connection', (socket) => {
             return;
         }
 
-
         let playerName = null;
         if (room.started) {
             let index = game.playerList.findIndex(player => player.clientId === socket.id);
