@@ -162,34 +162,34 @@ const onFormSubmitted = (e) => {
     socket.emit('message', text);
 };
 
-// Event 
-
-$("#lobby").hide();
-if ($("#gameId").val() != '') {
-    $("#createOption").toggleClass("unselected");
-    $("#joinOption").toggleClass("optionSelected");
-    $("#gameId").attr("disabled", false);
-}
-else {
-    $("#createOption").toggleClass("optionSelected");
-    $("#joinOption").toggleClass("unselected");
-    $("#gameId").attr("disabled", true);
-}
-$('#gameOver').hide();
-$("#gameElements").hide();
-$("#gameContainer").hide();
-$("#target").hide();
-$("#order").hide();
-$("#future").hide();
-$("#pickFromStack").hide();
-$("#info").hide();
-$("#sayNo").hide();
-$("#favor").hide();
-$("#waiting").hide();
-$("#fiveCats").hide();
+// Events
 
 
 $(document).ready(() => {
+        $("#lobby").hide();
+    if ($("#gameId").val() != '') {
+        $("#createOption").toggleClass("unselected");
+        $("#joinOption").toggleClass("optionSelected");
+        $("#gameId").attr("disabled", false);
+    }
+    else {
+        $("#createOption").toggleClass("optionSelected");
+        $("#joinOption").toggleClass("unselected");
+        $("#gameId").attr("disabled", true);
+    }
+    $('#gameOver').hide();
+    $("#gameElements").hide();
+    $("#gameContainer").hide();
+    $("#target").hide();
+    $("#order").hide();
+    $("#future").hide();
+    $("#pickFromStack").hide();
+    $("#info").hide();
+    $("#sayNo").hide();
+    $("#favor").hide();
+    $("#waiting").hide();
+    $("#fiveCats").hide();
+
     $("#createOption").click(() => {
         if (!$("#gameId").is(":disabled")) {
             $("#gameId").val('')
@@ -215,17 +215,16 @@ $(document).ready(() => {
 
     $("#enterGame").click(() => {
         gameId = gameIdText.value;
-        name = $.trim(playerName.value)
-
-        if (strip(name).length === 0) {
-            $("#errorMsg").html('Please enter a name.');
-            return;
-        }
-
-        if (name.lengtgh > 20) {
+        if (playerName.value.length > 20) {
             $("#errorMsg").html("Your name is too long.");
         }
 
+        name = strip($.trim(playerName.value))
+
+        if (name.length === 0) {
+            $("#errorMsg").html('Please enter a name.');
+            return;
+        }
         else {
             $("#errorMsg").html('');
         }
