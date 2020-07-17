@@ -282,6 +282,10 @@ io.on('connection', (socket) => {
     socket.on('cardPlayed', (cardsToPlay, gameId, clientId) => { // cards are just card names
         const room = games[gameId];
         const game = room.game;
+        if (clientId != game.playerList[game.turnCounter].clientId) {
+            return;
+        }
+        
         let status = game.playCards(cardsToPlay);
 
         switch(status) {    
@@ -333,9 +337,12 @@ io.on('connection', (socket) => {
         sendToAll(room.clients, game);
     });
     // Turn end
-    socket.on('endTurn', (gameId) => {
+    socket.on('endTurn', (gameId, clientId) => {
         const room = games[gameId];
         const game = room.game;
+        if (clientId != game.playerList[game.turnCounter].clientId) {
+            return;
+        }
         let status = game.endTurn();
         let client = game.playerList[game.turnCounter];
 

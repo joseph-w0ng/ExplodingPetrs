@@ -211,7 +211,7 @@ $(document).ready(() => {
             return;
         }
 
-        if (name.length > 20) {
+        if (name.lengtgh > 20) {
             $("#errorMsg").html("Your name is too long.");
         }
 
@@ -287,7 +287,7 @@ $(document).ready(() => {
         $("#future").hide();
         $("#infoText").html('');
         $("#invalidCard").html('');
-        socket.emit('endTurn', gameId);
+        socket.emit('endTurn', gameId, clientId);
     });
 
     $("#hand").on('click', 'img', function() {
