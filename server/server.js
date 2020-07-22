@@ -23,6 +23,10 @@ app.get('/:gameId', function(req, res) {
     res.render("index", {gameId: req.params.gameId})
 });
 
+app.get('/help', function(req, res) {
+    res.render("help");
+});
+
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     pingTimeout: 60000,
@@ -33,11 +37,6 @@ const allClients = {};
 const games = {};
 
 // Helper functions
-function strip(html){
-    var doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
- }
-
 function checkPacket(gameId, clientId) {
     const room = games[gameId];
     const game = room.game;
@@ -377,6 +376,9 @@ io.on('connection', (socket) => {
             case 6:
                 sendToAll(room.clients, game);
                 break;
+            case 7:
+                // Invalid packet
+                return;
 
         }
 

@@ -227,6 +227,7 @@ module.exports = class Game {
         // 4: card needed
         // 5: something needs to be displayed
         // 6: turn changed
+        // 7: invalid packet
         // Action card logic
         let player = this.playerList[this.turnCounter];
         let playedCards = [];
@@ -238,10 +239,12 @@ module.exports = class Game {
             let index = -1;
             if (!(card in seen)) {
                 index = player.hand.findIndex(c => c.name === card);
+                if (index == -1) return 7;
                 seen[card] = index;
             }
             else {
                 index = player.hand.findIndex((c, i) => c.name === card && i > seen[card]);
+                if (index == -1) return 7;
                 seen[card] = index;
             }
             playedCards.push(player.hand[index]);
